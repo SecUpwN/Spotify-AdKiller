@@ -12,9 +12,9 @@
 # Please do consider switching to premium to support Spotify!
 # -----------------------------------------------------------------------
 
-spotify "$@" > /dev/null 2>&1 &
+$HOME/bin/*spotify "" > /dev/null 2>&1 &
 sleep 20
-if [[ -z "$(pgrep spotify-aut)" ]]
+if [[ -z "" ]]
   then
-      spotify-adkiller > /dev/null 2>&1 &
+$HOME/bin/spotify-adkiller.sh > /dev/null 2>&1 &
 fi
