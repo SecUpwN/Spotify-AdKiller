@@ -16,5 +16,5 @@ spotify "$@" > /dev/null 2>&1 &
 sleep 20
 if [[ -z "$(pgrep spotify-aut)" ]]
   then
-      spotify-automute > /dev/null 2>&1 &
+      spotify-adkiller > /dev/null 2>&1 &
 fi
