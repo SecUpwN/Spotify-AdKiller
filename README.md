@@ -6,5 +6,5 @@ We all love Spotify, but sometimes people (like me) want to throw a party withou
 
 ### Installation of the script
 
-Move the script `adkiller.sh` to your PATH containing the Spotify-Binary (e.g. $HOME/bin on openSUSE and Ubuntu) and make it executable with `chmod +x adkiller.sh`. Then use the wrapper script `wrapper.sh` to start the AdKiller automatically when Spotify gets started. On openSUSE I simply placed the following line into the Spotify-Launcher on my Desktop: `Exec=/bin/bash /$HOME/bin/wrapper.sh %U`. You don't have to worry about terminating it when Spotify exits because that happens automatically.
+Move the script `adkiller.sh` to your PATH containing the Spotify-Binary (e.g. $HOME/bin on openSUSE and Ubuntu) and make it executable with `chmod +x spotify-adkiller.sh`. Then use the wrapper script `spotify-wrapper.sh` to start the AdKiller automatically when Spotify gets started. On openSUSE I simply placed the following line into the Spotify-Launcher on my Desktop: `Exec=/bin/bash /$HOME/bin/spotify-wrapper.sh %U`. You don't have to worry about terminating it when Spotify exits because that happens automatically.
 
