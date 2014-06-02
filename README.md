@@ -6,10 +6,10 @@ We all love Spotify, but sometimes people (like me) want to throw a party withou
 
 ### Installation of the script
 
-Move the script `spotify-adkiller.sh` to your PATH containing the Spotify-Binary (e.g. $HOME/bin on openSUSE and Ubuntu) and make it executable with `chmod +x spotify-adkiller.sh`. Then use the wrapper script `spotify-wrapper.sh` to start the AdKiller automatically when Spotify gets started.
+Move the Spotify-AdKiller `spotify-adkiller.sh` as well as the Wrapper `spotify-wrapper.sh` to your PATH containing the Spotify-Binary (e.g. $HOME/bin on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-adkiller.sh` and `chmod +x spotify-wrapper.sh`.
 
-On openSUSE I simply placed the following line into the Spotify-Launcher on my Desktop: `Exec=/bin/bash /$HOME/bin/spotify-wrapper.sh %U`. You don't have to worry about terminating it when Spotify exits because that happens automatically.
+Finally, just call the Wrapper `spotify-wrapper.sh` to start the AdKiller automatically when Spotify gets started. On openSUSE I simply placed the following line into the Spotify-Launcher on my Desktop: `Exec=/bin/bash /$HOME/bin/spotify-wrapper.sh %U`. You don't have to worry about terminating it when Spotify exits because that happens automatically.
 
 ### License of the Project
 
-Many people have contributed to make our script become what it is today (huge shout-out to the initial creator pcworld). If you are like me and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+.
+Many people have contributed to make our script become what it is today (huge shout-out to the initial creator pcworld). If you are like me and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE).
