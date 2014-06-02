@@ -35,7 +35,7 @@
 
 # Settings
 
-LOCALMUSIC="$HOME/Music"
+LOCALMUSIC="$HOME/Musi*"
 ALERT="/usr/share/sounds/gnome/default/alerts/glass.ogg"
 PLAYER="mpv --vo null"
 
@@ -83,46 +83,46 @@ while read -r XPROPOUTPUT; do
 
     if [[ "$XPROP_TRACKDATA" = "Spotify" ]]
       then
-          echo "PAUSED:      Yes"
+          echo "PAUSED:   Yes"
           PAUSED="1"
       else
           PAUSED="0"
-          echo "PAUSED:      No"
+          echo "PAUSED:   No"
     fi
 
     if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" =~ "$DBUS_TRACKDATA" ]]
       then
-          echo "AD:          No"
+          echo "AD:       No"
           if [[ "$ADMUTE" = "1" ]]
             then
                 if ps -p $ALTPID > /dev/null 2>&1       # if alternative player still running
                   then
-                      if [[ "$PAUSED" != "1" ]]         ## and if track not yet paused
+                      if [[ "$PAUSED" != "1" ]]         # and if track not yet paused
                         then
-                            spotify_playpause           ### then pause
-                            echo "##Pausing Spotify until local playback finished##"
+                            spotify_playpause           # then pause
+                            echo "## Pausing Spotify until local playback finished ##"
                       fi
-                      continue                          ## reset loop
-                  else                                                          # if player not running
+                      continue                          # reset loop
+                  else                                  # if player not running
                       for PACTLNR in $(get_pactl_nr); do
                           pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
-                          echo "##Unmuting sink $PACTLNR##"
-                          echo "##Switching back to Spotify##"
+                          echo "## Unmuting sink $PACTLNR ##"
+                          echo "## Switching back to Spotify ##"
                       done
                 fi
           fi
           ADMUTE=0
       else
-          echo "AD:          Yes"
+          echo "AD:       Yes"
           if [[ "$ADMUTE" != "1" ]]
             then
                 for PACTLNR in $(get_pactl_nr); do
                     pactl set-sink-input-mute "$PACTLNR" yes > /dev/null 2>&1
-                    echo "##Muting sink $PACTLNR##"
+                    echo "## Muting sink $PACTLNR ##"
                 done
                 if ! ps -p $ALTPID > /dev/null 2>&1
                   then
-                      echo "##Switching to local playback##"
+                      echo "## Switching to local playback ##"
                       player > /dev/null 2>&1 &
                       ALTPID="$!"
                 fi
