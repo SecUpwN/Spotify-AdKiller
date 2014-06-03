@@ -63,3 +63,5 @@ for i in $(pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' | cu
 ### License of the Project
 
 Many people have contributed to make our script become what it is today (huge shout-out to the initial creator pcworld). If you are like me and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE).
+
+This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.

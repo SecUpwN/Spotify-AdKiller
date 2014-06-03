@@ -42,7 +42,7 @@ while true; do
 done
 
 # only launch script if it isn't active already
-if [[ -z "$(pgrep spotify-adkiller)" ]]
+if [[ -z "$(pgrep spotify-adkill)" ]]
   then
       # no need to supply full path to executable if
       # spotify_adkiller.sh is in PATH
