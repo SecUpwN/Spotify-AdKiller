@@ -4,7 +4,7 @@
 # 03.06.2014
 
 * Fixed litteral quotation of $DBUS_TRACKDATA as recommended by jetchisel
-* Really AWESOME FIRST PULL REQUEST by Feltzer with huge re-write and improvements:
+* Really **AWESOME FIRST PULL REQUEST** by Feltzer with huge re-write and improvements:
 * Fix: Spotify stopping when Ad plays
 * Fix: Exiting the script kills all running instances of mpv
 * Fix: Exiting script while local playback is active leaves Spotify muted
@@ -95,4 +95,4 @@ Fix: Locale Issue where muting and unmuting didn't work anymore resolved by hair
 # 2012
 
 * GitHub-User pcworld launched the initial version of his script on GitHub Gist. THANK YOU!
-  (If you're curious, have a glance into the past on https://gist.github.com/pcworld/3198763)
+* (If you're curious, have a glance into the past on https://gist.github.com/pcworld/3198763)
