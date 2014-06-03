@@ -90,7 +90,7 @@ while read -r XPROPOUTPUT; do
           echo "PAUSED:   No"
     fi
 
-    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" =~ "$DBUS_TRACKDATA" ]]
+    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" =~ $DBUS_TRACKDATA ]]
       then
           echo "AD:       No"
           if [[ "$ADMUTE" = "1" ]]
