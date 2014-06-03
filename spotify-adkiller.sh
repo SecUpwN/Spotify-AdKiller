@@ -7,6 +7,16 @@
 # Automatically mutes Spotify when ad comes on and plays random local file
 # Automatically continues Spotify playback afterwards
 
+# DEPENDENCIES (Ubuntu): spotify, x11-utils, pulseaudio-utils
+#
+# Additonally you will need one of the following audio players:
+#  - mpv
+#  - vlc
+#  - mplayer
+#  - mpg321
+#  - avplay
+#  - ffplay                
+
 # IMPORTANT REMINDER! CAREFULLY READ AND UNDERSTAND THIS PART. THANK YOU.
 # -----------------------------------------------------------------------
 # Spotify is a fantastic service and worth every penny.
@@ -33,16 +43,24 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # -----------------------------------------------------------------------
 
+## SYS
+
+# get XDG default directories
+test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs \
+&& source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+
 ## Settings
 
 # volume of local playback
-VOLUME=80
+VOLUME=100
 # local music directory to choose tracks from
-LOCALMUSIC="$HOME/Musi*"
-# alert to play when switching to local playback
-ALERT="/usr/share/sounds/gnome/default/alerts/glass.ogg"
-# local music player (alternatives: cvlc, mpg321)
-PLAYER="mpv --vo null --colume=$VOLUME"
+# defaults to $HOME/Music (or equivalent on your system)
+LOCALMUSIC="${XDG_MUSIC_DIR}"
+# alert when switching to local playback
+# might not play if using mpg321 (sketchy ogg support)
+ALERT="/usr/share/sounds/freedesktop/stereo/complete.oga"
+# override automatic music player detection
+CUSTOMPLAYER=""
 
 ## VAR
 
@@ -53,18 +71,57 @@ INITIALRUN=1
 
 BINARY="spotify"
 
+## TXT
+
+ERRORMSG1="ERROR: No audio player detected. Please install mpv, cvlc, mpg321 \
+or define a custom player by setting CUSTOMPLAYER in the script."
+
 ## FCT
+
+choose_player(){
+    if [[ -n "$CUSTOMPLAYER" ]]; then
+      PLAYER="$CUSTOMPLAYER"
+      echo "##Using $CUSTOMPLAYER for playback##"
+      return
+    fi
+    if type mpv > /dev/null 2>&1; then
+      PLAYER="mpv --vo null --volume=$VOLUME"
+      echo "##Using mpv for local playback##"
+    elif type mplayer > /dev/null 2>&1; then
+      PLAYER="mplayer -vo null --volume=$VOLUME"
+      echo "##Using mplayer for local playback##"
+    elif type cvlc > /dev/null 2>&1; then
+      # vlc volume ranges from 0..256
+      PLAYER="cvlc --play-and-exit --volume=$((256*VOLUME/100))"
+      echo "##Using cvlc for local playback##"
+    elif type mpg321 > /dev/null 2>&1; then
+      PLAYER="mpg321 -g $VOLUME"
+      echo "##Using mpg321 for local playback##"
+    elif type avplay > /dev/null 2>&1; then
+      # custom volume not supported
+      PLAYER="avplay -nodisp -autoexit"
+      echo "##Using avplay for local playback##"
+    elif type ffplay > /dev/null 2>&1; then
+      # custom volume not supported
+      PLAYER="ffplay -nodisp -autoexit"
+      echo "##Using ffpla for local playback##"
+    else
+      echo "$ERRORMSG1"
+      exit 1
+    fi
+}
 
 restore_settings(){
     # I would love to restore the pactl settings here
     # but unfortunately it's impossible; pactl can only control
     # active sinks, i.e. if Spotify isn't running we can't control its
-    # mute state
+    # mute state. So instead we have to unmute Spotify on every initial run
+    # of this script (INITIALRUN=1)
     echo "##Restoring settings##"
-    # terminate local music playback                                      
-    killall -9 "$PLAYER"  # problematic, will kill all $PLAYER instances
-                          # would love to use the PID but can't get it out of the
-                          # freaking subshell   
+    # terminate PLAYER if still running
+    PLAYERPID="$(cat "$PIDFILE")"
+    kill -0 "$PLAYERPID" 2> /dev/null && kill -s TERM "$PLAYERPID"
+    [[ -f "$PIDFILE" ]] && rm "$PIDFILE"
 }
 
 
@@ -86,22 +143,31 @@ get_pactl_nr(){
 }
 
 player(){
-    RANDOMTRACK="$(find "$LOCALMUSIC" -name "*.mp3" | sort --random-sort | head -1)"
-    notify-send -i spotify "Spotify ad muter" "Playing ${RANDOMTRACK##*/}"
-    $PLAYER "$ALERT"
-    $PLAYER "$RANDOMTRACK"
+    RANDOMTRACK="$(find $LOCALMUSIC -name "*.mp3" | sort --random-sort | head -1)"
+    notify-send -i spotify "Spotify AdKiller" "Playing ${RANDOMTRACK##*/}"
+    $PLAYER "$ALERT" > /dev/null 2>&1 &         # alert user of switch to local playback
+    $PLAYER "$RANDOMTRACK" > /dev/null 2>&1 &   # play random track
+    PLAYERPID="$!"                              # get PLAYER PID
+    echo "$PLAYERPID" > "$PIDFILE"              # store player PID
+    wait "$PLAYERPID"                           # wait for player to exit before continuing
+    
     spotify_playpause # continue Spotify playback. This triggers the xprop spy and
-                      # subesequent actions like unmuting Spotify
+                      # subsequent actions like unmuting Spotify
 }
 
 ## PREP
 
+# create PIDFILE for inter-process-communication
+PIDFILE="$(mktemp)"
+
 # make sure to restore settings upon exit
 trap restore_settings EXIT
 
+# choose player
+choose_player
+
 ## MAIN
 
-xprop -spy -name "$WMTITLE" WM_ICON_NAME |
 while read -r XPROPOUTPUT; do
     XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d \" -f 2 )"
     DBUS_TRACKDATA="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
@@ -117,8 +183,8 @@ while read -r XPROPOUTPUT; do
       else
           PAUSED="0"
           echo "PAUSED:      No"
-          if [[ "$INITIALRUN" = 1 ]] # unmute on first track played
-            then
+          if [[ "$INITIALRUN" = 1 ]]  # unmute on initial run (to revert possible mute
+            then                      # from last run)
                 for PACTLNR in $(get_pactl_nr); do
                   pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
                   echo "##INITIAL: Unmuting sink $PACTLNR##"
@@ -129,7 +195,7 @@ while read -r XPROPOUTPUT; do
           fi
     fi
     
-    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" =~ "$DBUS_TRACKDATA" ]]
+    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" =~ $DBUS_TRACKDATA ]]
       then
           echo "AD:          No"
           if [[ "$ADMUTE" = "1" ]]
@@ -170,7 +236,10 @@ while read -r XPROPOUTPUT; do
           ADMUTE=1
     fi
     print_horiz_line
-done
+    player
+
+done < <(xprop -spy -name "$WMTITLE" WM_ICON_NAME)
+# use process substitution instead of piping to preserve variables
 
 echo "Spotify not active. Exiting."
 

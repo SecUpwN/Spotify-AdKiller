@@ -13,16 +13,14 @@
 # -----------------------------------------------------------------------
 
 # WARNING: If you use this wrapper please make sure to ALWAYS use it
-#          If you start Spotify without it, there's a chance that it will
+#          If you start Spotify without it, there's a chance that Spotify will
 #          stay muted and will have to be manually be unmuted through pactl
-#
-#          Unmute command (just in case):
-#          for i in $(pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' \
-#          | cut -d \# -f2 | grep -v Spotify); do pactl set-sink-input-mute "$i" no; done
 
 WMTITLE="Spotify - Linux Preview"
 COUNTER="0"
 
+# no need to supply full path to executable if
+# spotify is in PATH
 spotify "$@" > /dev/null 2>&1 &
 
 # wait for spotify to launch
@@ -44,7 +42,9 @@ while true; do
 done
 
 # only launch script if it isn't active already
-if [[ -z "$(pgrep spotify-adk)" ]]
+if [[ -z "$(pgrep spotify-adkiller)" ]]
   then
+      # no need to supply full path to executable if
+      # spotify_adkiller.sh is in PATH
       spotify_adkiller.sh > /dev/null 2>&1 &
 fi
