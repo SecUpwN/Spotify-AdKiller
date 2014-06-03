@@ -25,7 +25,7 @@ Please consult the Settings section below for information on setting a custom au
 
 Install all utilities + vlc on Ubuntu with:
 
-   sudo apt-get install x11-utils pulseaudio-utils libnotify-bin vlc
+    sudo apt-get install x11-utils pulseaudio-utils libnotify-bin vlc
 
 
 ### Installation of the script
