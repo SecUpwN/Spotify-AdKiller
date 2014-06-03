@@ -139,11 +139,12 @@ get_pactl_nr(){
             $1 == "index:" {idx = $2} 
             $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx; exit}
         '
-    # awk script by Glenn Jackmann (http://askubuntu.com/a/180661/81372)
+    # awk script by Glenn Jackmann (http://askubuntu.com/users/10127/)
+    # first posted on http://askubuntu.com/a/180661
 }
 
 player(){
-    RANDOMTRACK="$(find $LOCALMUSIC -name "*.mp3" | sort --random-sort | head -1)"
+    RANDOMTRACK="$(find "$LOCALMUSIC" -name "*.mp3" | sort --random-sort | head -1)"
     notify-send -i spotify "Spotify AdKiller" "Playing ${RANDOMTRACK##*/}"
     $PLAYER "$ALERT" > /dev/null 2>&1 &         # alert user of switch to local playback
     $PLAYER "$RANDOMTRACK" > /dev/null 2>&1 &   # play random track
@@ -236,7 +237,6 @@ while read -r XPROPOUTPUT; do
           ADMUTE=1
     fi
     print_horiz_line
-    player
 
 done < <(xprop -spy -name "$WMTITLE" WM_ICON_NAME)
 # use process substitution instead of piping to preserve variables
