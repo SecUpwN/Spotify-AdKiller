@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Spotify-Adkiller Repository: https://github.com/SecUpwN/Spotify-AdKiller/
+# Official Spotify-AdKiller Repository: https://github.com/SecUpwN/Spotify-AdKiller/
+# CHANGELOG: https://github.com/SecUpwN/Spotify-AdKiller/blob/master/CHANGELOG.md
 # Feel free to contribute improvements and suggestions to this funky script!
 
 # Spotify-AdKiller-Mode: Automute-Continuous
@@ -23,13 +24,8 @@
 # This script is *NOT* meant to circumvent buying premium.
 # Please do consider switching to premium to support Spotify!
 # -----------------------------------------------------------------------
-
-# This script has a history! Here's how this awesome script was born:
-# Original GitHub Gist by pcworld in 2012: https://gist.github.com/pcworld/3198763
-# Multiple improvement suggestions and forks by several members of GitHub
-# Mayjor re-write by Feltzer in 2014 to support continuous music playback
-# Last Error-Fix by hairyheron in May 2014 before creating our Repository
-
+# This product is not endorsed, certified or otherwise approved in any way
+# by Spotify. Spotify is the registered trade mark of the Spotify Group.
 # -----------------------------------------------------------------------
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
@@ -81,30 +77,30 @@ or define a custom player by setting CUSTOMPLAYER in the script."
 choose_player(){
     if [[ -n "$CUSTOMPLAYER" ]]; then
       PLAYER="$CUSTOMPLAYER"
-      echo "##Using $CUSTOMPLAYER for playback##"
+      echo "## Using $CUSTOMPLAYER for playback ##"
       return
     fi
     if type mpv > /dev/null 2>&1; then
       PLAYER="mpv --vo null --volume=$VOLUME"
-      echo "##Using mpv for local playback##"
+      echo "## Using mpv for local playback ##"
     elif type mplayer > /dev/null 2>&1; then
       PLAYER="mplayer -vo null --volume=$VOLUME"
-      echo "##Using mplayer for local playback##"
+      echo "## Using mplayer for local playback ##"
     elif type cvlc > /dev/null 2>&1; then
       # vlc volume ranges from 0..256
       PLAYER="cvlc --play-and-exit --volume=$((256*VOLUME/100))"
-      echo "##Using cvlc for local playback##"
+      echo "## Using cvlc for local playback ##"
     elif type mpg321 > /dev/null 2>&1; then
       PLAYER="mpg321 -g $VOLUME"
-      echo "##Using mpg321 for local playback##"
+      echo "## Using mpg321 for local playback ##"
     elif type avplay > /dev/null 2>&1; then
       # custom volume not supported
       PLAYER="avplay -nodisp -autoexit"
-      echo "##Using avplay for local playback##"
+      echo "## Using avplay for local playback ##"
     elif type ffplay > /dev/null 2>&1; then
       # custom volume not supported
       PLAYER="ffplay -nodisp -autoexit"
-      echo "##Using ffpla for local playback##"
+      echo "## Using ffpla for local playback ##"
     else
       echo "$ERRORMSG1"
       exit 1
@@ -145,7 +141,7 @@ get_pactl_nr(){
 
 player(){
     RANDOMTRACK="$(find "$LOCALMUSIC" -name "*.mp3" | sort --random-sort | head -1)"
-    notify-send -i spotify "Spotify AdKiller" "Playing ${RANDOMTRACK##*/}"
+    notify-send -i spotify "Spotify-AdKiller" "Playing ${RANDOMTRACK##*/}"
     $PLAYER "$ALERT" > /dev/null 2>&1 &         # alert user of switch to local playback
     $PLAYER "$RANDOMTRACK" > /dev/null 2>&1 &   # play random track
     PLAYERPID="$!"                              # get PLAYER PID
@@ -188,7 +184,7 @@ while read -r XPROPOUTPUT; do
             then                      # from last run)
                 for PACTLNR in $(get_pactl_nr); do
                   pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
-                  echo "##INITIAL: Unmuting sink $PACTLNR##"
+                  echo "## INITIAL: Unmuting sink $PACTLNR ##"
                 done
                 INITIALRUN="0"
                 print_horiz_line
@@ -206,15 +202,15 @@ while read -r XPROPOUTPUT; do
                       if [[ "$PAUSED" != "1" ]]         ## and if track not yet paused
                         then
                             spotify_playpause           ### then pause
-                            echo "##Pausing Spotify until local playback finished##"
+                            echo "## Pausing Spotify until local playback finished ##"
                       fi
                       print_horiz_line
                       continue                          ## reset loop
                   else
                       for PACTLNR in $(get_pactl_nr); do
                           pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
-                          echo "##Unmuting sink $PACTLNR##"
-                          echo "##Switching back to Spotify##"
+                          echo "## Unmuting sink $PACTLNR ##"
+                          echo "## Switching back to Spotify ##"
                       done
                 fi
           fi
@@ -225,11 +221,11 @@ while read -r XPROPOUTPUT; do
             then
                 for PACTLNR in $(get_pactl_nr); do
                     pactl set-sink-input-mute "$PACTLNR" yes > /dev/null 2>&1
-                    echo "##Muting sink $PACTLNR##"
+                    echo "## Muting sink $PACTLNR ##"
                 done
                 if ! ps -p $ALTPID > /dev/null 2>&1
                   then
-                      echo "##Switching to local playback##"
+                      echo "## Switching to local playback ##"
                       player > /dev/null 2>&1 &
                       ALTPID="$!"
                 fi
