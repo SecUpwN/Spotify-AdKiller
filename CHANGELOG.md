@@ -100,7 +100,7 @@ Fix: Locale Issue where muting and unmuting didn't work anymore resolved by hair
 
 * First recommendation with code for improvements to mute just Spotify by bim9262
 
-# 2012
+# 29.07.2012
 
 * GitHub-User pcworld launched the initial version of his script on GitHub Gist. THANK YOU!
 * (If you're curious, have a glance into the past on https://gist.github.com/pcworld/3198763)
