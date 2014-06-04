@@ -80,16 +80,16 @@ choose_player(){
       echo "## Using $CUSTOMPLAYER for playback ##"
       return
     fi
-    if type mpv > /dev/null 2>&1; then
-      PLAYER="mpv --vo null --volume=$VOLUME"
-      echo "## Using mpv for local playback ##"
-    elif type mplayer > /dev/null 2>&1; then
-      PLAYER="mplayer -vo null --volume=$VOLUME"
-      echo "## Using mplayer for local playback ##"
-    elif type cvlc > /dev/null 2>&1; then
+    if type cvlc > /dev/null 2>&1; then
       # vlc volume ranges from 0..256
       PLAYER="cvlc --play-and-exit --volume=$((256*VOLUME/100))"
       echo "## Using cvlc for local playback ##"
+    elif type mplayer > /dev/null 2>&1; then
+      PLAYER="mplayer -vo null --volume=$VOLUME"
+      echo "## Using mplayer for local playback ##"
+    elif type mpv > /dev/null 2>&1; then
+      PLAYER="mpv --vo null --volume=$VOLUME"
+      echo "## Using mpv for local playback ##"
     elif type mpg321 > /dev/null 2>&1; then
       PLAYER="mpg321 -g $VOLUME"
       echo "## Using mpg321 for local playback ##"
@@ -192,7 +192,7 @@ while read -r XPROPOUTPUT; do
           fi
     fi
     
-    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" =~ $DBUS_TRACKDATA ]]
+    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *$DBUS_TRACKDATA* ]]
       then
           echo "AD:          No"
           if [[ "$ADMUTE" = "1" ]]
