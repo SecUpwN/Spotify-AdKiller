@@ -6,6 +6,8 @@
 * Fix: Removed a debug call to player(), which caused the script to keep on switching to local playback
 * Fix: Quoted LOCALMUSIC properly, which enables local playback if the user set a custom music path with spaces
 * Improved: Added Links to our new CHANGELOG and beautified some very tiny code snippets
+* Changed: DBUS/XPROP comparison method (old one was failing on certain special characters)
+* Changed: Reordered choose_player() by player popularity/availability
 
 # 03.06.2014
 
