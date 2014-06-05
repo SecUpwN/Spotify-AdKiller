@@ -47,7 +47,7 @@ while true; do
         echo "Error: Spotify not found."
         exit 1
   fi
-  echo "##Waiting for Spotify##"
+  echo "## Waiting for Spotify ##"
   xprop -name "$WMTITLE" WM_ICON_NAME > /dev/null 2>&1
   if [[ "$?" == "0" ]]; then
     break
