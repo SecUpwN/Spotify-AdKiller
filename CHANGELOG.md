@@ -4,6 +4,7 @@
 # 05.06.2014
 
 * Fix: AdKiller would return false positives if song title contained double-quotes
+* Improved: Aligned variables of XPROPOUTPUT (yes, I admit it: I'm a perfectionist!)
 
 # 04.06.2014
 
