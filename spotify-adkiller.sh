@@ -113,7 +113,7 @@ restore_settings(){
     # active sinks, i.e. if Spotify isn't running we can't control its
     # mute state. So instead we have to unmute Spotify on every initial run
     # of this script (INITIALRUN=1)
-    echo "##Restoring settings##"
+    echo "## Restoring settings ##"
     # terminate PLAYER if still running
     PLAYERPID="$(cat "$PIDFILE")"
     kill -0 "$PLAYERPID" 2> /dev/null && kill -s TERM "$PLAYERPID"
@@ -177,11 +177,11 @@ while read -r XPROPOUTPUT; do
     
     if [[ "$XPROP_TRACKDATA" = "Spotify" ]]
       then
-          echo "PAUSED:      Yes"
+          echo "PAUSED:   Yes"
           PAUSED="1"
       else
           PAUSED="0"
-          echo "PAUSED:      No"
+          echo "PAUSED:   No"
           if [[ "$INITIALRUN" = 1 ]]  # unmute on initial run (to revert possible mute
             then                      # from last run)
                 for PACTLNR in $(get_pactl_nr); do
@@ -196,7 +196,7 @@ while read -r XPROPOUTPUT; do
     
     if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *$DBUS_TRACKDATA* ]]
       then
-          echo "AD:          No"
+          echo "AD:       No"
           if [[ "$ADMUTE" = "1" ]]
             then
                 if ps -p $ALTPID > /dev/null 2>&1       # if alternative player still running
@@ -218,7 +218,7 @@ while read -r XPROPOUTPUT; do
           fi
           ADMUTE=0
       else
-          echo "AD:          Yes"
+          echo "AD:       Yes"
           if [[ "$ADMUTE" != "1" ]]
             then
                 for PACTLNR in $(get_pactl_nr); do
