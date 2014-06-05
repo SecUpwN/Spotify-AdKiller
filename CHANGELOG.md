@@ -1,6 +1,10 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+# 05.06.2014
+
+* Fix: AdKiller would return false positives if song title contained double-quotes
+
 # 04.06.2014
 
 * Fix: Removed a debug call to player(), which caused the script to keep on switching to local playback
@@ -11,7 +15,7 @@
 
 # 03.06.2014
 
-* Fix: Removed litteral quotation of $DBUS_TRACKDATA as recommended by jetchisel
+* Fix: Removed literal quotation of $DBUS_TRACKDATA as recommended by jetchisel
 * Really **AWESOME FIRST PULL REQUEST** by Feltzer with huge re-write and improvements:
 * Fix: Spotify stopping when Ad plays
 * Fix: Exiting the script kills all running instances of mpv
