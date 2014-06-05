@@ -29,7 +29,7 @@ Install all utilities + VLC on **Ubuntu** with:
 
 Install all utilities + VLC on **openSUSE** with:
 
-    sudo zypper in x11-utils pulseaudio-utils libnotify-bin vlc
+    sudo zypper in binutils pulseaudio-utils libnotify-tools vlc
 
 ### Installation of the script
 
