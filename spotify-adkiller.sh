@@ -166,7 +166,9 @@ choose_player
 ## MAIN
 
 while read -r XPROPOUTPUT; do
-    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d \" -f 2 )"
+    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" \
+    | sed -n 's/WM_ICON_NAME(COMPOUND_TEXT) = \"//p' \
+    | head -c -2 )"
     DBUS_TRACKDATA="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
     org.freedesktop.MediaPlayer2.GetMetadata | grep xesam:title -A 1 | grep variant | cut -d \" -f 2)"
     
