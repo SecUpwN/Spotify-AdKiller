@@ -4,6 +4,7 @@
 # 06.06.2014
 
 * Improved: Several smaller code improvements and more comments on the code
+* Fix: Changed music directory autodetection and substring matching, added a few checks
 
 # 05.06.2014
 
