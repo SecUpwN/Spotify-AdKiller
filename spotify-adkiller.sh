@@ -72,19 +72,30 @@ INITIALRUN=1
 
 ERRORMSG1="ERROR: No audio player detected. Please install cvlc, mplayer, mpv, \
 mpg321, avplay, ffplay, or define a custom player by setting CUSTOMPLAYER."
-
+ERRORMSG2="ERROR: Local music directory not found. Please specify the folder \
+manually inside this script."
+ERRORMSG3="ERROR: Local music folder location is wrong."
 
 ## FUNCTIONS
 
 set_musicdir(){
-    if [[ -z "$CUSTOM_MUSIC" ]]
-      then
-          # get XDG default directories
-          test -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" \
-          && source "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs"
-          LOCAL_MUSIC="${XDG_MUSIC_DIR}"
-      else
-          LOCAL_MUSIC="$CUSTOM_MUSIC"
+    if [[ -z "$CUSTOM_MUSIC" ]]; then
+        # get XDG default directories
+        test -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" \
+        && source "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
+        LOCAL_MUSIC="${XDG_MUSIC_DIR}"
+
+        if [[ -z "$LOCAL_MUSIC" ]]; then
+            echo "$ERRORMSG2"
+            exit 1
+        fi
+    else
+        LOCAL_MUSIC="$CUSTOM_MUSIC"
+    fi
+
+    if ! [[ -d "$LOCAL_MUSIC" ]]; then
+        echo "$ERRORMSG3"
+        exit 1
     fi
 }
 
