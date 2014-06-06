@@ -6,6 +6,7 @@
 * Fix: AdKiller would return false positives if song title contained double-quotes
 * Improved: Aligned variables of XPROPOUTPUT (yes, I admit it: I'm a perfectionist!)
 * Improved: Updated installation command for required utilities on openSUSE
+* Fix: Empty XPROP_TRACKDATA when playback paused + made DBUS parsing more safe
 
 # 04.06.2014
 
