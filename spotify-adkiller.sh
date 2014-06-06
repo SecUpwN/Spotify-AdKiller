@@ -147,7 +147,7 @@ get_pactl_nr(){
 }
 
 player(){
-    RANDOM_TRACK="$(find "$LOCAL_MUSIC" -name "*.mp3" | sort --random-sort | head -1)"
+    RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
     notify-send -i spotify "Spotify-AdKiller" "Playing ${RANDOM_TRACK##*/}"
     [[ -n "$ALERT" ]] && $PLAYER "$ALERT" > /dev/null 2>&1 &  # Alert user
     $PLAYER "$RANDOM_TRACK" > /dev/null 2>&1 &                # Play random track
