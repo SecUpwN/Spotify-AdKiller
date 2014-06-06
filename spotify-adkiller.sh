@@ -72,19 +72,30 @@ INITIALRUN=1
 
 ERRORMSG1="ERROR: No audio player detected. Please install cvlc, mplayer, mpv, \
 mpg321, avplay, ffplay, or define a custom player by setting CUSTOMPLAYER."
-
+ERRORMSG2="ERROR: Local music directory not found. Please specify the folder \
+manually inside this script."
+ERRORMSG3="ERROR: Local music folder location is wrong."
 
 ## FUNCTIONS
 
 set_musicdir(){
-    if [[ -z "$CUSTOM_MUSIC" ]]
-      then
-          # get XDG default directories
-          test -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" \
-          && source "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs"
-          LOCAL_MUSIC="${XDG_MUSIC_DIR}"
-      else
-          LOCAL_MUSIC="$CUSTOM_MUSIC"
+    if [[ -z "$CUSTOM_MUSIC" ]]; then
+        # get XDG default directories
+        test -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" \
+        && source "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
+        LOCAL_MUSIC="${XDG_MUSIC_DIR}"
+
+        if [[ -z "$LOCAL_MUSIC" ]]; then
+            echo "$ERRORMSG2"
+            exit 1
+        fi
+    else
+        LOCAL_MUSIC="$CUSTOM_MUSIC"
+    fi
+
+    if ! [[ -d "$LOCAL_MUSIC" ]]; then
+        echo "$ERRORMSG3"
+        exit 1
     fi
 }
 
@@ -147,7 +158,7 @@ get_pactl_nr(){
 }
 
 player(){
-    RANDOM_TRACK="$(find "$LOCAL_MUSIC" -name "*.mp3" | sort --random-sort | head -1)"
+    RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
     notify-send -i spotify "Spotify-AdKiller" "Playing ${RANDOM_TRACK##*/}"
     [[ -n "$ALERT" ]] && $PLAYER "$ALERT" > /dev/null 2>&1 &  # Alert user
     $PLAYER "$RANDOM_TRACK" > /dev/null 2>&1 &                # Play random track
@@ -225,7 +236,7 @@ while read -r XPROPOUTPUT; do
 
     
     # Check if current track is an ad and take appropriate action
-    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *$DBUS_TRACKDATA* ]]
+    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* ]]
       then
           echo "AD:       No"
           if [[ "$ADMUTE" = "1" ]]
