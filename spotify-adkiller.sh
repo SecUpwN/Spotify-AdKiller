@@ -225,7 +225,7 @@ while read -r XPROPOUTPUT; do
 
     
     # Check if current track is an ad and take appropriate action
-    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *$DBUS_TRACKDATA* ]]
+    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* ]]
       then
           echo "AD:       No"
           if [[ "$ADMUTE" = "1" ]]
