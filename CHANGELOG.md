@@ -1,6 +1,10 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+# 06.06.2014
+
+* Improved: Several smaller code improvements and more comments on the code
+
 # 05.06.2014
 
 * Fix: AdKiller would return false positives if song title contained double-quotes
