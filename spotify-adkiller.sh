@@ -315,7 +315,7 @@ player(){
     RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
     notify_send "Playing ${RANDOM_TRACK##*/}"
     [[ -n "$ALERT" ]] && $PLAYER "$ALERT" > /dev/null 2>&1 &  # Alert user
-    $PLAYER "$1" "$RANDOM_TRACK" > /dev/null 2>&1 &           # Play random track
+    $PLAYER $1 "$RANDOM_TRACK" > /dev/null 2>&1 &             # Play random track
     PLAYER_PID="$!"                                           # Get PLAYER PID
     echo "$PLAYER_PID" > "$PIDFILE"                           # Store player PID
     wait "$PLAYER_PID"                                        # Wait for player to
