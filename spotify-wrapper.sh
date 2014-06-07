@@ -71,5 +71,5 @@ if [[ -z "$(pgrep spotify-adkill)" ]]
   then
       # no need to supply full path to executable if
       # spotify_adkiller.sh is in PATH
-      spotify_adkiller.sh > /dev/null 2>&1 &
+      spotify-adkiller.sh > /dev/null 2>&1 &
 fi
