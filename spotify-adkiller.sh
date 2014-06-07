@@ -4,20 +4,9 @@
 # CHANGELOG: https://github.com/SecUpwN/Spotify-AdKiller/blob/master/CHANGELOG.md
 # Feel free to contribute improvements and suggestions to this funky script!
 
-# Spotify-AdKiller-Mode: Automute-Continuous
-# Automatically mutes Spotify when ad comes on and plays random local file
-# Automatically continues Spotify playback afterwards
+# Spotify AdKiller main script
 
-# DEPENDENCIES:   - Ubuntu:     x11-utils pulseaudio-utils libnotify-bin
-#                 - openSUSE:   binutils pulseaudio-utils libnotify-tools
-
-# Additonally you will need one of the following audio players:
-#  - mpv
-#  - vlc
-#  - mplayer
-#  - mpg321
-#  - avplay
-#  - ffplay
+# Please make sure to consult the attached README file before using this script
 
 # IMPORTANT REMINDER! CAREFULLY READ AND UNDERSTAND THIS PART. THANK YOU.
 # -----------------------------------------------------------------------
@@ -40,43 +29,94 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # -----------------------------------------------------------------------
 
+## VARIABLES
 
-## SETTINGS
+# !! PLEASE DO NOT MODIFY THIS SECTION. USE THE CONFIGFILE INSTEAD !!
+# !!     DEFAULT CONFIG PATH: "$HOME/.config/Spotify-AdKiller"     !!
+
+# config
+
+CONFIG_PATH="$XDG_CONFIG_HOME/Spotify-AdKiller"
+CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
+CONFIG_DEFAULT=\
+'##                                                      ##
+## Configuration file for Spotify-AdKiller              ##
+## Please make sure to double-quote all custom values   ##
+##                                                      ##
+
+CUSTOM_MODE=""
+# ad block mode. possible values:
+# - simple        — mute Spotify, unmute when ad is over
+# - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
+# - continuous    — mute Spotify, play random local track, stop and unmute when track is over
+# -> set to continuous by default
 
 CUSTOM_PLAYER=""
 # local music player to use
-# - will be chosen automatically if not set
-CUSTOM_VOLUME=""
+# -> chosen automatically by default
+
+CUSTOM_VOLUME="80"
 # volume of local playback
-# - will be set to 100 if empty
-CUSTOM_MUSIC=""
-# local music directory to choose tracks from
-# - will use XDG standard music directory if not set
-# - please make sure that the tracks in your music directory
-#   are at least as long as the average Spotify ad (30-60 secs)
-ALERT="/usr/share/sounds/freedesktop/stereo/complete.oga"
+# -> set to 100 by default
+
+CUSTOM_MUSIC="$HOME/Music/Shared Music/Verschiedenes"
+# local music directory / track
+# -> set to XDG standard music directory by default
+
+CUSTOM_ALERT=""
 # alert when switching to local playback
 # - might not play if using mpg321 (sketchy ogg support)
+# -> set to XDG standard alert by default'
 
+# settings
 
-## VARIABLES
-
+DEBUG=0
 WMTITLE="Spotify - Linux Preview"
 BINARY="spotify"
+ALERT="/usr/share/sounds/freedesktop/stereo/complete.oga"
+
+# initialization
+
+INITIALRUN=1
 ADMUTE=0
 PAUSED=0
-INITIALRUN=1
-
+LOCPLAY=0
+PAUSESIGNAL=0
+ADFINISHED=0
 
 ## CLI MESSAGES
 
 ERRORMSG1="ERROR: No audio player detected. Please install cvlc, mplayer, mpv, \
-mpg321, avplay, ffplay, or define a custom player by setting CUSTOMPLAYER."
-ERRORMSG2="ERROR: Local music directory not found. Please specify the folder \
-manually inside this script."
-ERRORMSG3="ERROR: Local music folder location is wrong."
+mpg321, avplay, ffplay, or define a custom player by setting CUSTOM_PLAYER."
+ERRORMSG2="ERROR: Default music folder not found. Please set a custom location. \
+Switching to simple automute (no local playback)"
+ERRORMSG3="ERROR: No music found in the specified location. Please check the settings. \
+Switching to simple automute (no local playback)"
 
 ## FUNCTIONS
+
+debuginfo(){
+    if [[ "$DEBUG" = "1" ]]
+      then
+          echo "$1"
+    fi
+}
+
+notify_send(){
+    notify-send -i spotify-client "Spotify-AdKiller" "$1"
+}
+
+print_horiz_line(){
+    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+}
+
+read_config(){
+    mkdir -p "$CONFIG_PATH"
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+      echo "$CONFIG_DEFAULT" > "$CONFIG_FILE"
+    fi
+    source "$CONFIG_FILE"
+}
 
 set_musicdir(){
     if [[ -z "$CUSTOM_MUSIC" ]]; then
@@ -87,16 +127,32 @@ set_musicdir(){
 
         if [[ -z "$LOCAL_MUSIC" ]]; then
             echo "$ERRORMSG2"
-            exit 1
+            notify_send "$ERRORMSG2"
+            CUSTOM_MODE="simple"
         fi
     else
         LOCAL_MUSIC="$CUSTOM_MUSIC"
     fi
+    
+    echo "## Music path: $LOCAL_MUSIC ##"
 
-    if ! [[ -d "$LOCAL_MUSIC" ]]; then
+    if [[ -z "$(find "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null )" ]]; then
         echo "$ERRORMSG3"
-        exit 1
+        notify_send "$ERRORMSG3"
+        CUSTOM_MODE="simple"
     fi
+}
+
+set_alert(){
+    if [[ -z "$CUSTOM_ALERT" && -f "$ALERT" ]]; then
+      ALERT="$ALERT"
+    elif [[ "$CUSTOM_ALERT" = "none" ]]; then
+      ALERT=""
+    elif [[ -f "$CUSTOM_ALERT" ]]; then
+      ALERT="$CUSTOM_ALERT"
+    else
+      ALERT=""
+    fi    
 }
 
 set_player(){
@@ -105,20 +161,27 @@ set_player(){
     elif type cvlc > /dev/null 2>&1; then
       # vlc volume ranges from 0..256
       PLAYER="cvlc --play-and-exit --volume=$((256*VOLUME/100))"
+      LOOPOPT="--repeat"
     elif type mplayer > /dev/null 2>&1; then
       PLAYER="mplayer -vo null --volume=$VOLUME"
+      LOOPOPT="-loop"
     elif type mpv > /dev/null 2>&1; then
       PLAYER="mpv --vo null --volume=$VOLUME"
+      LOOPOPT="--loop=inf"
     elif type mpg321 > /dev/null 2>&1; then
       PLAYER="mpg321 -g $VOLUME"
+      LOOPOPT="--loop 0"
     elif type avplay > /dev/null 2>&1; then
       # custom volume not supported
       PLAYER="avplay -nodisp -autoexit"
+      LOOPOPT="-loop 0"
     elif type ffplay > /dev/null 2>&1; then
       # custom volume not supported
-      PLAYER="ffplay -nodisp -autoexit"    
+      PLAYER="ffplay -nodisp -autoexit"
+      LOOPOPT="-loop 0"
     else
       echo "$ERRORMSG1"
+      notify_send "$ERRORMSG1"
       exit 1
     fi
     echo "## Using $(echo "$PLAYER" | cut -d' ' -f1) for local playback ##"
@@ -133,62 +196,336 @@ set_volume(){
     fi
 }
 
+set_mode(){
+    case "$CUSTOM_MODE" in
+      continuous)     AUTOMUTE="automute_continuous"
+                      ;;
+      interstitial)   AUTOMUTE="automute_interstitial"
+                      ;;
+      simple)         AUTOMUTE="automute_simple"
+                      ;;
+      "")             AUTOMUTE="automute_continuous"
+                      ;;
+      \?)             echo "$ERRORMSG4"
+                      exit 1
+                      ;;
+    esac
+
+    echo "## Ad block mode: $AUTOMUTE ##"
+}
+
 setup_vars(){
     set_musicdir
+    set_mode
     set_player
+    set_alert
     set_volume
 }
 
-print_horiz_line(){
-    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
-}
+get_state(){
 
-spotify_playpause(){
-    dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
-    org.mpris.MediaPlayer2.Player.PlayPause > /dev/null 2>&1
+    # get track data from xprop and the DBUS interface
+    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
+    DBUS_TRACKDATA="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
+    org.freedesktop.MediaPlayer2.GetMetadata | grep xesam:title -A 1 | grep variant | \
+    cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
+    # `cut | rev | cut | rev` gets string between first and last double-quotes
+    # TODO: find a more elegant way to do this
+
+    echo "XPROP:    $XPROP_TRACKDATA"
+    echo "DBUS:     $DBUS_TRACKDATA"
+
+    # check if track paused
+    if [[ "$XPROP_TRACKDATA" = "Spotify" ]]
+      then
+          echo "PAUSED:   Yes"
+          PAUSED="1"
+      else
+          echo "PAUSED:   No"
+          PAUSED="0"
+    fi
+
+    # check if track is an ad
+    if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
+      then
+          echo "AD:       Yes"
+          AD="1"
+    elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
+      then
+          echo "AD:       Can't say"
+          AD="0"
+      else
+          echo "AD:       No"
+          AD="0"
+    fi
+
+    # check if local player running
+    if ps -p "$ALTPID" > /dev/null 2>&1
+      then
+          echo "LOCAL:    Yes"
+          LOCPLAY="1"
+      else
+          echo "LOCAL:    No"
+          LOCPLAY="0"
+    fi
+    
+    debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
 }
 
 get_pactl_nr(){
     LC_ALL=C pacmd list-sink-inputs | awk -v binary="$BINARY" '
-            $1 == "index:" {idx = $2} 
+            $1 == "index:" {idx = $2}
             $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx; exit}
         '
     # awk script by Glenn Jackmann (http://askubuntu.com/users/10127/)
     # first posted on http://askubuntu.com/a/180661
 }
 
+mute(){
+    debuginfo "pactl: mute"
+    for PACTLNR in $(get_pactl_nr); do
+      pactl set-sink-input-mute "$PACTLNR" yes > /dev/null 2>&1
+      echo "## Muting sink $PACTLNR ##"
+    done
+    ADMUTE=1
+}
+
+unmute(){
+    debuginfo "pactl: unmute"
+    for PACTLNR in $(get_pactl_nr); do
+        pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
+        echo "## Unmuting sink $PACTLNR ##"
+    done
+    ADMUTE=0
+}
+
+stop_localplayback(){
+    kill -s TERM "$ALTPID" 2> /dev/null
+    [[ -f "$PIDFILE" ]] && PLAYER_PID="$(cat "$PIDFILE")"
+    kill -s TERM "$PLAYER_PID" 2> /dev/null
+}
+
+spotify_dbus(){
+    dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
+    org.mpris.MediaPlayer2.Player."$1" > /dev/null 2>&1
+    debuginfo "dbus: $1"
+}
+
 player(){
     RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
-    notify-send -i spotify "Spotify-AdKiller" "Playing ${RANDOM_TRACK##*/}"
+    notify_send "Playing ${RANDOM_TRACK##*/}"
     [[ -n "$ALERT" ]] && $PLAYER "$ALERT" > /dev/null 2>&1 &  # Alert user
-    $PLAYER "$RANDOM_TRACK" > /dev/null 2>&1 &                # Play random track
+    $PLAYER "$1" "$RANDOM_TRACK" > /dev/null 2>&1 &           # Play random track
     PLAYER_PID="$!"                                           # Get PLAYER PID
     echo "$PLAYER_PID" > "$PIDFILE"                           # Store player PID
-    wait "$PLAYER_PID"                                        # Wait for player to 
+    wait "$PLAYER_PID"                                        # Wait for player to
                                                               # exit before continuing
-                                                              
-    spotify_playpause                                         # Continue Spotify playback. 
+
+    spotify_dbus PlayPause                                    # Continue Spotify playback.
                                                               # This triggers the xprop spy and
                                                               # subsequent actions like unmuting
+}
+
+
+automute_continuous(){
+    # no ad, first track
+    if [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "1" ]]
+      then
+          echo "## Initial run ##"
+          unmute
+          INITIALRUN="0"
+
+    # no ad, regular track
+    elif [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "0" ]]
+      then
+          echo "## Regular track ##"
+
+    # no ad, regular pause
+    elif [[ "$AD" = "0" && "$PAUSED" = "1" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "0" ]]
+      then
+          echo "## Paused by User ##"
+
+    # ad finished
+    elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
+      then
+          echo "## Pausing Spotify until local playback finished / user interrupt ##"
+          ADFINISHED=1
+          spotify_dbus Pause
+
+    # ad finished, next track paused
+    elif [[ "$AD" = "0" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "1" ]]
+      then
+          echo "## Paused by AdKiller ##"
+          PAUSESIGNAL=1
+          spotify_dbus Pause
+
+    # ad, manual pause
+    elif [[ "$AD" = "0" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
+      then
+          echo "## Paused during ad by User ##"
+          notify_send "Ad is still on. Please wait for a moment."
+          spotify_dbus PlayPause
+    
+    # ad finished, user unpaused/switched track
+    elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "1" && "$ADFINISHED" = "1" ]]
+      then
+          echo "## Interrupting local playback ##"
+          notify_send "Local playback interrupted"
+          stop_localplayback
+          unmute
+          PAUSESIGNAL=0
+          ADFINISHED=0
+
+    # ad finished, local playback finished
+    elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "0" && "$PAUSESIGNAL" = "1" && "$ADFINISHED" = "1" ]]
+      then
+          echo "## Switching back to Spotify ##"
+          unmute
+          PAUSESIGNAL=0
+          ADFINISHED=0
+          
+    # ad still on, local playback finished
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "0" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
+      then
+          echo "## Playing next local track ##"
+          mute
+          player > /dev/null 2>&1 &
+          ALTPID="$!"
+
+    # ad started
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "0" &&  \
+      "$LOCPLAY" = "0" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
+      then
+          echo "## Switching to local playback ##"
+          mute
+          player > /dev/null 2>&1 &
+          ALTPID="$!"
+
+    # second ad / manual unpause while ad is on
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
+      then
+          echo "## Keep local playback running ##"
+
+    fi
+}
+
+automute_simple(){
+    # no ad, first track
+    if [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "1" ]]
+      then
+          echo "## Initial run ##"
+          unmute
+          INITIALRUN="0"
+
+    # no ad, regular track
+    elif [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "0" ]]
+      then
+          echo "## Regular track ##"
+
+    # no ad, regular pause
+    elif [[ "$AD" = "0" && "$PAUSED" = "1" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "0" ]]
+      then
+          echo "## Paused by User ##"
+
+    # ad finished
+    elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" ]]
+      then
+          unmute
+
+    # ad started
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "0" ]]
+      then
+          mute
+
+    fi
+}
+
+automute_interstitial(){
+    # no ad, first track
+    if [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "1" ]]
+      then
+          echo "## Initial run ##"
+          unmute
+          INITIALRUN="0"
+
+    # no ad, regular track
+    elif [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "0" ]]
+      then
+          echo "## Regular track ##"
+
+    # no ad, regular pause
+    elif [[ "$AD" = "0" && "$PAUSED" = "1" && "$ADMUTE" = "0" &&  \
+     "$INITIALRUN" = "0" ]]
+      then
+          echo "## Paused by User ##"
+
+    # ad finished
+    elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" ]]
+      then
+          echo "## Interrupting local playback ##"
+          stop_localplayback
+          unmute
+
+    # ad, manual pause
+    elif [[ "$AD" = "0" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" ]]
+      then
+          echo "## Paused by User during ad  ##"
+          notify_send "Ad is still on. Please wait for a moment."
+          spotify_dbus PlayPause
+
+    # ad started
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "0" &&  \
+      "$LOCPLAY" = "0" ]]
+      then
+          echo "## Switching to local playback ##"
+          mute
+          player "$LOOPOPT" > /dev/null 2>&1 &
+          ALTPID="$!"
+
+    # second ad / manual unpause while ad is on
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" ]]
+      then
+          echo "## Keep local playback running ##"
+
+    fi
 }
 
 restore_settings(){
     echo "## Restoring settings ##"
     # terminate PLAYER if still running
-    [[ -f "$PIDFILE" ]] && PLAYER_PID="$(cat "$PIDFILE")"
-    kill -0 "$PLAYER_PID" 2> /dev/null && kill -s TERM "$PLAYER_PID"
+    stop_localplayback
     [[ -f "$PIDFILE" ]] && rm "$PIDFILE"
-    # I would love to restore the mute state here but unfortunately it's impossible. 
-    # `pactl` can only control active sinks, i.e. if Spotify isn't running we can't 
-    # control its mute state. So we have to resort to unmuting Spotify on every initial 
+    # I would love to restore the mute state here but unfortunately it's impossible.
+    # `pactl` can only control active sinks, i.e. if Spotify isn't running we can't
+    # control its mute state. So we have to resort to unmuting Spotify on every initial
     # run of this script (INITIALRUN=1)
 }
 
-
 ## PREPARATION
 
+# read configuration file
+read_config
+
 # create PIDFILE for inter-process-communication
-PIDFILE="$(mktemp -u "${0##*/}".XXXXXXXX)"
+PIDFILE="$(mktemp -u --tmpdir "${0##*/}.XXXXXXXX")"
 
 # make sure to restore settings upon exit
 trap restore_settings EXIT
@@ -196,94 +533,21 @@ trap restore_settings EXIT
 # setup player, music directory, and volume
 setup_vars
 
-
 ## MAIN
+
+#while read -r XPROP_TRACKDATA DBUS_TRACKDATA; do # DEBUG
 
 while read -r XPROPOUTPUT; do
 
-    # get track data from xprop and the DBUS interface
-    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
-    DBUS_TRACKDATA="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
-    org.freedesktop.MediaPlayer2.GetMetadata | grep xesam:title -A 1 | grep variant | \
-    cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
+    get_state
 
-    # `cut | rev | cut | rev` gets string between first and last double-quotes
-    # TODO: find a more elegant way to do this
+    $AUTOMUTE
 
-    echo "XPROP:    $XPROP_TRACKDATA"
-    echo "DBUS:     $DBUS_TRACKDATA"
-    
-   
-    # Check if Spotify is paused and/or has just been launched
-    if [[ "$XPROP_TRACKDATA" = "Spotify" ]]
-      then
-          echo "PAUSED:   Yes"
-          PAUSED="1"
-      else
-          PAUSED="0"
-          echo "PAUSED:   No"
-          if [[ "$INITIALRUN" = 1 ]]                    # unmute on initial run
-            then
-                for PACTLNR in $(get_pactl_nr); do
-                  pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1
-                  echo "## INITIAL: Unmuting sink $PACTLNR ##"
-                done
-                INITIALRUN="0"
-                print_horiz_line
-                continue
-          fi
-    fi
-
-    
-    # Check if current track is an ad and take appropriate action
-    if [[ "$PAUSED" = "1" || "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* ]]
-      then
-          echo "AD:       No"
-          if [[ "$ADMUTE" = "1" ]]
-            then
-                if ps -p "$ALTPID" > /dev/null 2>&1     # if alternative player still running
-                  then
-                      if [[ "$PAUSED" != "1" ]]         ## and if track not yet paused
-                        then
-                            spotify_playpause           ### then pause
-                            echo "## Pausing Spotify until local playback finished ##"
-                      fi
-                      print_horiz_line
-                      continue                          ## reset loop
-                  else
-                      for PACTLNR in $(get_pactl_nr); do
-                          pactl set-sink-input-mute "$PACTLNR" no > /dev/null 2>&1 ## unmute
-                          echo "## Unmuting sink $PACTLNR ##"
-                          echo "## Switching back to Spotify ##"
-                      done
-                fi
-          fi
-          ADMUTE=0
-      else
-          echo "AD:       Yes"
-          if [[ "$ADMUTE" != "1" ]]
-            then
-                for PACTLNR in $(get_pactl_nr); do
-                    pactl set-sink-input-mute "$PACTLNR" yes > /dev/null 2>&1
-                    echo "## Muting sink $PACTLNR ##"
-                done
-                if ! ps -p $ALTPID > /dev/null 2>&1
-                  then
-                      echo "## Switching to local playback ##"
-                      player > /dev/null 2>&1 &
-                      ALTPID="$!"
-                fi
-          fi
-          ADMUTE=1
-    fi
- 
-    
-    # print horizontal line
     print_horiz_line
 
 done < <(xprop -spy -name "$WMTITLE" WM_ICON_NAME)  # we use process substitution instead of piping
                                                     # to avoid executing the loop in a subshell
-                                                    
+
 echo "Spotify not active. Exiting."
 
 exit 0

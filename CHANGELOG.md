@@ -1,6 +1,18 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+# 07.06.2014
+
+* Improved: Completely rewrote script logic. This should fix most of the issues with false positives/negatives in ad detection
+* Improved: Added ability to skip local track in continuous mode
+* Improved: Added two new ad blocking modes (simple and interstitial)
+* Improved: Added configuration file
+* Imprvoed: Added desktop launcher
+* Improved: Added installation script
+* Improved: Added debug switch
+* Improved: Various other small things
++ Fix: Automatically switch to 'simple' mode if no audio files found
+
 # 06.06.2014
 
 * Improved: Several smaller code improvements and more comments on the code

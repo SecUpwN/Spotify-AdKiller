@@ -4,7 +4,7 @@
 # CHANGELOG: https://github.com/SecUpwN/Spotify-AdKiller/blob/master/CHANGELOG.md
 # Feel free to contribute improvements and suggestions to this funky script!
 
-# Wrapper script to automatically start Spotify-AdKiller when Spotify starts
+# Installation script for Spotify-AdKiller
 
 # Please make sure to consult the attached README file before using this script
 
@@ -29,47 +29,40 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # -----------------------------------------------------------------------
 
-# WARNING: If you use this wrapper please make sure to ALWAYS use it
-#          If you start Spotify without it, there's a chance that Spotify will
-#          stay muted and will have to be manually be unmuted through pactl
+# WARNING: This installation script has only been tested on Ubuntu
 
-WMTITLE="Spotify - Linux Preview"
-COUNTER="0"
-ERRORMSG1="Error: Spotify not found."
+INSTALLDIR="$HOME/bin"
+CONFIGDIR="$XDG_CONFIG_HOME/Spotify-AdKiller"
+APPDIR="$HOME/.local/share/applications"
 
-notify_send(){
-    notify-send -i spotify-client "Spotify-AdKiller" "$1"
-}
+SCRIPT="spotify-adkiller.sh"
+WRAPPER="spotify-wrapper.sh"
+CONFIGFILE="Spotify-AdKiller.cfg"
+DESKTOPFILE="Spotify (AdKiller).desktop"
 
+ERRORMSG1="ERROR: One or more files not found. Please make sure to\
+execute this script in the right working directory."
+WARNINGMSG1="Please make sure that $INSTALLDIR is part of your PATH"
 
+echo "$WARNINGMSG1"
 
-# no need to supply full path to executable if
-# spotify is in PATH
-spotify "$@" > /dev/null 2>&1 &
-
-# wait for spotify to launch
-# if spotify not launched after 50 seconds
-# exit script
-while true; do
-  if [[ "$COUNTER" = "10" ]]
-    then
-        notify_send "$ERRORMSG1"
-        echo "$ERRORMSG1"
-        exit 1
-  fi
-  echo "## Waiting for Spotify ##"
-  xprop -name "$WMTITLE" WM_ICON_NAME > /dev/null 2>&1
-  if [[ "$?" == "0" ]]; then
-    break
-  fi
-  COUNTER=$(( COUNTER + 1 ))
-  sleep 5
-done
-
-# only launch script if it isn't active already
-if [[ -z "$(pgrep spotify-adkill)" ]]
-  then
-      # no need to supply full path to executable if
-      # spotify_adkiller.sh is in PATH
-      spotify_adkiller.sh > /dev/null 2>&1 &
+if [[ ! -f "$SCRIPT" || ! -f "$WRAPPER" || ! -f "$CONFIGFILE" ]]; then
+  echo "$ERRORMSG1"
+  exit 1
 fi
+
+echo "## Changing permissions ##"
+chmod -v +x "$SCRIPT"
+chmod -v +x "$WRAPPER"
+
+echo "## Creating installation directories ##"
+mkdir -vp "$INSTALLDIR"
+mkdir -vp "$CONFIGDIR"
+
+echo "## Installing files ##"
+cp -v "$SCRIPT" "$INSTALLDIR/"
+cp -v "$WRAPPER" "$INSTALLDIR/"
+cp -v "$CONFIGFILE" "$CONFIGDIR/"
+cp -v "$DESKTOPFILE" "$APPDIR/"
+
+echo "## Done. ##"
