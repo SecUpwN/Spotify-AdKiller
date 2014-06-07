@@ -68,9 +68,9 @@ The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spot
 
 `CUSTOM_MODE` controls the ad blocking mode. The following modes are available:
 
-- simple: mute Spotify, unmute when ad is over
-- interstitial mute Spotify, play random local track, stop and unmute when ad is over
-- continuous: mute Spotify, play random local track, stop and unmute when track is over
+- `simple`: mute Spotify, unmute when ad is over
+- `interstitial`: mute Spotify, play random local track, stop and unmute when ad is over
+- `continuous`: mute Spotify, play random local track, stop and unmute when track is over
   - You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys)
 
 The default ad blocking mode is `continuous`.
