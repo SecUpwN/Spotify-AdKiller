@@ -224,10 +224,15 @@ setup_vars(){
 
 get_state(){
 
+    DBUSOUTPUT="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
+    org.freedesktop.MediaPlayer2.GetMetadata)"
+
+    debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
+    debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
+    
     # get track data from xprop and the DBUS interface
     XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
-    DBUS_TRACKDATA="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
-    org.freedesktop.MediaPlayer2.GetMetadata | grep xesam:title -A 1 | grep variant | \
+    DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | \
     cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
     # `cut | rev | cut | rev` gets string between first and last double-quotes
     # TODO: find a more elegant way to do this
