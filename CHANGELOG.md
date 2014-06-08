@@ -1,6 +1,10 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+# 08.06.2014
+
+* Added: XPROP/DBUS debug output to fix Issues more easily
+
 # 07.06.2014
 
 * Improved: Completely rewrote script logic. This should fix most of the issues with false positives/negatives in ad detection
@@ -11,7 +15,7 @@
 * Improved: Added installation script
 * Improved: Added debug switch
 * Improved: Various other small things
-+ Fix: Automatically switch to 'simple' mode if no audio files found
+* Fix: Automatically switch to 'simple' mode if no audio files found
 
 # 06.06.2014
 
