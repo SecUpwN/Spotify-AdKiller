@@ -1,6 +1,11 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+# 09.06.2014
+
+* Added: Spacing between Installer outputs and colors for Warnings
+* Fix: Corrected CONFIGDIR to be correctly detected by openSUSE
+
 # 08.06.2014
 
 * Added: XPROP/DBUS debug output to fix Issues more easily
