@@ -29,10 +29,10 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # -----------------------------------------------------------------------
 
-# WARNING: This installation script has only been tested on Ubuntu
+# WARNING: This installation script has only been tested on Ubuntu and openSUSE
 
 INSTALLDIR="$HOME/bin"
-CONFIGDIR="$XDG_CONFIG_HOME/Spotify-AdKiller"
+CONFIGDIR="$HOME/.config/Spotify-AdKiller"
 APPDIR="$HOME/.local/share/applications"
 
 SCRIPT="spotify-adkiller.sh"
@@ -40,29 +40,37 @@ WRAPPER="spotify-wrapper.sh"
 CONFIGFILE="Spotify-AdKiller.cfg"
 DESKTOPFILE="Spotify (AdKiller).desktop"
 
-ERRORMSG1="ERROR: One or more files not found. Please make sure to\
-execute this script in the right working directory."
-WARNINGMSG1="Please make sure that $INSTALLDIR is part of your PATH"
+ERRORMSG1="\e[1;31mERROR: One or more files not found. Please make sure to \
+execute this script in the right working directory.\e[0m"
+WARNINGMSG1="\e[1;93mPlease make sure that $INSTALLDIR is part of your PATH! \e[0m"
 
-echo "$WARNINGMSG1"
+echo -e "$WARNINGMSG1"
 
 if [[ ! -f "$SCRIPT" || ! -f "$WRAPPER" || ! -f "$CONFIGFILE" ]]; then
-  echo "$ERRORMSG1"
+  echo -e "$ERRORMSG1"
   exit 1
 fi
+
+echo
 
 echo "## Changing permissions ##"
 chmod -v +x "$SCRIPT"
 chmod -v +x "$WRAPPER"
 
+echo
+
 echo "## Creating installation directories ##"
 mkdir -vp "$INSTALLDIR"
 mkdir -vp "$CONFIGDIR"
+
+echo
 
 echo "## Installing files ##"
 cp -v "$SCRIPT" "$INSTALLDIR/"
 cp -v "$WRAPPER" "$INSTALLDIR/"
 cp -v "$CONFIGFILE" "$CONFIGDIR/"
 cp -v "$DESKTOPFILE" "$APPDIR/"
+
+echo
 
 echo "## Done. ##"
