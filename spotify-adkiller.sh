@@ -31,46 +31,16 @@
 
 ## VARIABLES
 
-# !! PLEASE DO NOT MODIFY THIS SECTION. USE THE CONFIGFILE INSTEAD !!
+# !! PLEASE DO NOT MODIFY THIS SECTION. USE THE CONFIG_FILE INSTEAD !!
 # !!     DEFAULT CONFIG PATH: "$HOME/.config/Spotify-AdKiller"     !!
 
 # config
 
 CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
 CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
-CONFIG_DEFAULT=\
-'##                                                      ##
-## Configuration file for Spotify-AdKiller              ##
-## Please make sure to double-quote all custom values   ##
-##                                                      ##
-
-CUSTOM_MODE=""
-# ad block mode. possible values:
-# - simple        — mute Spotify, unmute when ad is over
-# - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
-# - continuous    — mute Spotify, play random local track, stop and unmute when track is over
-# -> set to continuous by default
-
-CUSTOM_PLAYER=""
-# local music player to use
-# -> chosen automatically by default
-
-CUSTOM_VOLUME="80"
-# volume of local playback
-# -> set to 100 by default
-
-CUSTOM_MUSIC="$HOME/Music/Shared Music/Verschiedenes"
-# local music directory / track
-# -> set to XDG standard music directory by default
-
-CUSTOM_ALERT=""
-# alert when switching to local playback
-# - might not play if using mpg321 (sketchy ogg support)
-# -> set to XDG standard alert by default'
 
 # settings
 
-DEBUG=0
 WMTITLE="Spotify - Linux Preview"
 BINARY="spotify"
 ALERT="/usr/share/sounds/freedesktop/stereo/complete.oga"
@@ -111,11 +81,7 @@ print_horiz_line(){
 }
 
 read_config(){
-    mkdir -p "$CONFIG_PATH"
-    if [[ ! -f "$CONFIG_FILE" ]]; then
-      echo "$CONFIG_DEFAULT" > "$CONFIG_FILE"
-    fi
-    source "$CONFIG_FILE"
+    [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 }
 
 set_musicdir(){
