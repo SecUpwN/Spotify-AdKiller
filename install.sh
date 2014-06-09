@@ -31,23 +31,33 @@
 
 # WARNING: This installation script has only been tested on Ubuntu and openSUSE
 
+# VAR
+
 INSTALLDIR="$HOME/bin"
-CONFIGDIR="$HOME/.config/Spotify-AdKiller"
-APPDIR="$HOME/.local/share/applications"
+CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"  # try to follow XDG specs
+APPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"      # try to follow XDG specs
 
 SCRIPT="spotify-adkiller.sh"
 WRAPPER="spotify-wrapper.sh"
 CONFIGFILE="Spotify-AdKiller.cfg"
 DESKTOPFILE="Spotify (AdKiller).desktop"
 
-ERRORMSG1="\e[1;31mERROR: One or more files not found. Please make sure to \
+ERRORMSG1="\e[1;31mERROR: $INSTALLDIR is not part of your PATH.\e[0m Current PATH:
+$PATH
+\e[1;93mPlease change 'INSTALLDIR' in this installer script and try again.\e[0m"
+ERRORMSG2="\e[1;31mERROR: One or more files not found. Please make sure to \
 execute this script in the right working directory.\e[0m"
-WARNINGMSG1="\e[1;93mPlease make sure that $INSTALLDIR is part of your PATH! \e[0m"
 
-echo -e "$WARNINGMSG1"
+
+# MAIN
+
+if [[ ! "$PATH" == ?(*:)"$INSTALLDIR"?(:*) ]]; then             # check if INSTALLDIR part of
+  echo -e "$ERRORMSG1"                                          # PATH
+  exit 1
+fi
 
 if [[ ! -f "$SCRIPT" || ! -f "$WRAPPER" || ! -f "$CONFIGFILE" ]]; then
-  echo -e "$ERRORMSG1"
+  echo -e "$ERRORMSG2"
   exit 1
 fi
 

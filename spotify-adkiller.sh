@@ -36,7 +36,7 @@
 
 # config
 
-CONFIG_PATH="$XDG_CONFIG_HOME/Spotify-AdKiller"
+CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
 CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
 CONFIG_DEFAULT=\
 '##                                                      ##
