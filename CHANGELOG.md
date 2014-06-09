@@ -3,6 +3,11 @@
 
 # 09.06.2014
 
+* Changed: Moved config file setup from AdKiller to Wrapper
+* Improved: DEBUG setting now enables log file
+* Improved: Added DEBUG setting to configuration file
+* Fix: Set XDG paths in a more safe and generic manner
+* Improved: Check if installation directory is part of system PATH
 * Added: Spacing between Installer outputs and colors for Warnings
 * Fix: Corrected CONFIGDIR to be correctly detected by openSUSE
 
