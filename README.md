@@ -44,13 +44,19 @@ Run the provided installer:
     cd Spotify-AdKiller
     ./install.sh
 
-Note: The installer script will install Spotify-AdKiller to `$HOME/bin`, which is part of the PATH on Ubuntu and openSUSE. Please follow the instructions in the manual installation section below if your distro is configured differently or if you want to install the script to another folder.
+A few notes:
+
+- if you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`. 
+ 
+ You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
+
+- the installer script will install Spotify-AdKiller to `$HOME/bin`, which is part of the PATH on Ubuntu and openSUSE. Please follow the instructions in the manual installation section below if your distro is configured differently or if you want to install the script to another folder.
 
 **Manual installation**
 
-1. Copy `spotify-adkiller.sh` and `spotify-wrapper.sh` to your PATH (e.g. `$HOME/bin` on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-adkiller.sh` and `chmod +x spotify-wrapper.sh`.
+1. Copy `spotify-adkiller.sh` and `spotify-wrapper.sh` to your PATH (e.g. `$HOME/bin` or `/usr/local/bin` on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-adkiller.sh` and `chmod +x spotify-wrapper.sh`.
 
-2. Copy `Spotify (AdKiller).desktop` to `$HOME/.local/share/applications` or any other folder your distro reads `.desktop` launchers from
+2. Copy `Spotify (AdKiller).desktop` to `$HOME/.local/share/applications` or any other folder your distro reads `.desktop` launchers from (e.g. `/usr/share/applications`, `/usr/local/share/applications`)
 
 The default configuration file will be written automatically on the first startup of the script.
 
@@ -84,16 +90,20 @@ The following settings control local music playback during ads:
 - `CUSTOM_MUSIC`: local track to play / local music directory to choose tracks from; set to XDG standard music directory by default (e.g. `$HOME/Music`)
 - `CUSTOM_ALERT`: audio alert to play when switching to local playback; XDG standard 'bell' sound by default; set to `none` to disable 
 
+**Debug setting**
+
+You can make the CLI output more verbose and enable the log file by setting `DEBUG` to `1`. The log will be written to `$HOME/.Spotify-AdKiller.log` and replaced each time the AdKiller is run.
+
 ### Important notes
 
 Please make sure to always use the provided launcher when running Spotify. Under some circumstances Spotify might remain muted when exiting the application. This is a technical limitation with PulseAudio. Spotify AdKiller automatically unmutes Spotify when initially run.
 
-If for some reason Spotify does remain muted you can use the following command to unmute it manually while it's running:
+If, for some reason, Spotify does remain muted you can use the following command to unmute it manually while it's running:
 
 ```bash
-for i in $(pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' | cut -d \# -f2 | grep -v Spotify); do pactl set-sink-input-mute "$i" no; done
+for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' | cut -d \# -f2 | grep -v Spotify); do pactl set-sink-input-mute "$i" no; done
 ```
 
 ### License of the Project
 
-Many people have contributed to make our script become what it is today (huge shout-out to the initial creator pcworld). If you are like me and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE). **This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.**
+Many people have contributed to make our script become what it is today (huge shout-out to the initial creator pcworld). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE). **This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.**
