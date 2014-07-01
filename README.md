@@ -44,13 +44,19 @@ Run the provided installer:
     cd Spotify-AdKiller
     ./install.sh
 
-A few notes:
+**Troubleshooting**
 
 - if you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`. 
  
- You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
+    You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
 
-- the installer script will install Spotify-AdKiller to `$HOME/bin`, which is part of the PATH on Ubuntu and openSUSE. Please follow the instructions in the manual installation section below if your distro is configured differently or if you want to install the script to another folder.
+- the installer script will install Spotify-AdKiller to `$HOME/bin`, which should be recognized by Ubuntu and openSUSE
+ 
+- if `$HOME/bin` didn't exist before, a relog might be necessary to complete the installation 
+
+    Technical explanation: Ubuntu automatically adds `$HOME/bin` to your PATH if it exists when you log in. Relogging reloads `$HOME/.profile` and updates your PATH.
+
+    If the script doesn't work after relogging you can either [manually add](http://askubuntu.com/q/3744) `$HOME/bin` to your PATH or follow the installation instructions below. This also applies if you're using a distro that is configured differently than Ubuntu/OpenSUSE or if you want to install the script in a custom location.
 
 **Manual installation**
 

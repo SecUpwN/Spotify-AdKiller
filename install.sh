@@ -31,6 +31,7 @@
 
 # WARNING: This installation script has only been tested on Ubuntu and openSUSE
 
+
 # VAR
 
 INSTALLDIR="$HOME/bin"
@@ -42,22 +43,43 @@ WRAPPER="spotify-wrapper.sh"
 CONFIGFILE="Spotify-AdKiller.cfg"
 DESKTOPFILE="Spotify (AdKiller).desktop"
 
-ERRORMSG1="\e[1;31mERROR: $INSTALLDIR is not part of your PATH.\e[0m Current PATH:
-$PATH
-\e[1;93mPlease change 'INSTALLDIR' in this installer script and try again.\e[0m"
-ERRORMSG2="\e[1;31mERROR: One or more files not found. Please make sure to \
+INFOMSG1="\e[1;93mWARNING: $INSTALLDIR is not part of your PATH. Your current PATH:
+
+\e[0m$PATH
+
+\e[1;93mIf you are on Ubuntu you might have to relog to complete the installation.
+This will update your PATH and make the script available to your system.
+
+\e[0mIf the launcher doesn't work after relogging you will have to manually add
+$INSTALLDIR to your PATH variable. 
+
+Alternatively you could abort this installation and follow the instructions in the
+README to manually install Spotify AdKiller.
+
+\e[1;93mDo you want to proceed with the installation? \e[0m(y/n)"
+
+ERRORMSG1="\e[1;31mERROR: One or more files not found. Please make sure to \
 execute this script in the right working directory.\e[0m"
 
 
 # MAIN
 
-if [[ ! "$PATH" == ?(*:)"$INSTALLDIR"?(:*) ]]; then             # check if INSTALLDIR part of
-  echo -e "$ERRORMSG1"                                          # PATH
-  exit 1
+## check if INSTALLDIR is part of PATH
+## prompt user for action
+if [[ ! "$PATH" == ?(*:)"$INSTALLDIR"?(:*) ]]; then             
+  echo -e "$INFOMSG1"
+  read INSTALLCHOICE
+  if [[ "$INSTALLCHOICE" != "y" ]]; then
+    echo "Aborting installation."
+    exit 1
+  else
+    echo "Proceeding with installation."
+  fi                                       
 fi
 
+## check if all files present
 if [[ ! -f "$SCRIPT" || ! -f "$WRAPPER" || ! -f "$CONFIGFILE" ]]; then
-  echo -e "$ERRORMSG2"
+  echo -e "$ERRORMSG1"
   exit 1
 fi
 
@@ -78,7 +100,7 @@ echo
 echo "## Installing files ##"
 cp -v "$SCRIPT" "$INSTALLDIR/"
 cp -v "$WRAPPER" "$INSTALLDIR/"
-cp -v "$CONFIGFILE" "$CONFIGDIR/"
+[[ ! -f "$CONFIGFILE" ]] && cp -v "$CONFIGFILE" "$CONFIGDIR/"
 cp -v "$DESKTOPFILE" "$APPDIR/"
 
 echo
