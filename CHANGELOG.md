@@ -1,6 +1,10 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+# 01.07.2014
+
+* Fix: Feltzer nuked a few Issues with the Installer and updated the README
+
 # 09.06.2014
 
 * Changed: Moved config file setup from AdKiller to Wrapper
