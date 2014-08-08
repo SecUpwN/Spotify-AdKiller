@@ -1,8 +1,10 @@
 # Spotify-AdKiller (for LINUX)
 
-Your Party with Spotify - but without Ads!
+Your Party with Spotify - but without ads!
 
-We all love Spotify, but sometimes people (like me) want to throw a party without interrupting Ads before having bought premium. This is for testing purposes ONLY! Spotify is a fantastic service and worth every penny. This script is **NOT** meant to circumvent buying premium! Please do consider switching to premium to support Spotify - especially if you're going to use it on the move. If the script does not work for you, help us improve it!
+We all love Spotify, but sometimes people (like us) want to throw a party without interrupting ads before having bought premium. Well, now you can!
+
+This is for testing purposes ONLY! Spotify is a fantastic service and worth every penny. This script is **NOT** meant to circumvent buying premium! Please do consider switching to premium to support Spotify - especially if you're going to use it on mobile. If the script does not work for you, please help us improve it!
 
 ### Dependencies
 
@@ -74,7 +76,7 @@ The script will terminate automatically as soon as Spotify exits.
 
 ### Settings
 
-The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spotify-AdKiller/Spotify-AdKiller.cfg`. There are several settings that control how Spotify-AdKiller will deal with detected ads:
+The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spotify-AdKiller/Spotify-AdKiller.cfg`. There are several settings that control how Spotify-AdKiller operates:
 
 **Modes**
 
@@ -110,6 +112,12 @@ If, for some reason, Spotify does remain muted you can use the following command
 for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' | cut -d \# -f2 | grep -v Spotify); do pactl set-sink-input-mute "$i" no; done
 ```
 
-### License of the Project
+### Similar projects
 
-Many people have contributed to make our script become what it is today (huge shout-out to the initial creator pcworld). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE). **This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.**
+- [blockify](https://github.com/mikar/blockify) - automatic/blacklist-based ad-blocker written in python
+- [indicator-muteads](https://launchpad.net/indicator-muteads) - blacklist-based ad-blocker written in C
+- [spotify_ad_blocker_linux.rb](https://github.com/superr4y/hacks/blob/master/spotify/spotify_ad_blocker_linux.rb) - automatic ad-blocker written in Ruby
+
+### License
+
+Many people have contributed to make our script become what it is today (huge shout-out to the initial creator [pcworld](https://github.com/pcworld)). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE). **This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.**
