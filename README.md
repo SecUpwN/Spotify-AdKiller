@@ -4,7 +4,7 @@ Your Party with Spotify - but without ads!
 
 We all love Spotify, but sometimes people (like us) want to throw a party without interrupting ads before having bought premium. Well, now you can!
 
-This is for testing purposes ONLY! Spotify is a fantastic service and worth every penny. This script is **NOT** meant to circumvent buying premium! Please do consider switching to premium to support Spotify - especially if you're going to use it on mobile. If the script does not work for you, please help us improve it!
+This is for testing purposes ONLY! Spotify is a fantastic service and worth every penny. This script is **NOT** meant to circumvent buying premium! Please do consider switching to premium to support Spotify - especially if you're going to use it on mobile. If the script does not work for you, help us improve it!
 
 ### Dependencies
 
@@ -120,4 +120,6 @@ for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\
 
 ### License
 
-Many people have contributed to make our script become what it is today (huge shout-out to the initial creator [pcworld](https://github.com/pcworld)). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Feel free to read our complete [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE). **This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.**
+Many people have contributed to make our script become what it is today (huge shout-out to the initial creator [pcworld](https://github.com/pcworld)). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Have a look at the full [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE).
+
+**This product is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group. Use your brainz prior to formatting your harddrive.**
