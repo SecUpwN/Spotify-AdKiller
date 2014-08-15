@@ -86,16 +86,21 @@ The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spot
 
 - `simple`: mute Spotify, unmute when ad is over
 - `interstitial`: mute Spotify, play random local track, stop and unmute when ad is over
+    + if the local track is shorter than the ad, Spotify-AdKiller will automatically try to loop it. This will only work with players that support a loop option. If you are planning to use this feature with a custom player make sure to also supply a custom loop option in your configuration file
 - `continuous`: mute Spotify, play random local track, stop and unmute when track is over
-  - You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys)
+    + You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys)
+    + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely/is shorter than the current ad Spotify-AdKiller will switch to the next random local track in line.
 
 The default ad blocking mode is `continuous`.
+
+Spotify-AdKiller will automatically fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
 
 **Local playback**
 
 The following settings control local music playback during ads:
 
 - `CUSTOM_PLAYER`: local music player to use; chosen automatically by default
+- `CUSTOM_LOOPOPT`: loop option for custom player (e.g. `-loop 0`); we recommend setting this if you are planning to use interstitial adblocking mode
 - `CUSTOM_VOLUME`: volume of local playback; set to 100 by default
 - `CUSTOM_MUSIC`: local track to play / local music directory to choose tracks from; set to XDG standard music directory by default (e.g. `$HOME/Music`)
 - `CUSTOM_ALERT`: audio alert to play when switching to local playback; XDG standard 'bell' sound by default; set to `none` to disable 

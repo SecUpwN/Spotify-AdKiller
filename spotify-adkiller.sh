@@ -56,9 +56,10 @@ ADFINISHED=0
 
 ## CLI MESSAGES
 
-ERRORMSG1="ERROR: No audio player detected. Please install cvlc, mplayer, mpv, \
-mpg321, avplay, ffplay, or define a custom player by setting CUSTOM_PLAYER."
-ERRORMSG2="ERROR: Default music folder not found. Please set a custom location. \
+ERRORMSG1="ERROR: No supported audio player detected. Please install one of the supported \
+players or define a custom player by setting CUSTOM_PLAYER.
+Switching to simple automute (no local playback)"
+ERRORMSG2="ERROR: Default music folder not found. Please set a custom location.
 Switching to simple automute (no local playback)"
 ERRORMSG3="ERROR: No music found in the specified location. Please check the settings. \
 Switching to simple automute (no local playback)"
@@ -124,6 +125,7 @@ set_alert(){
 set_player(){
     if [[ -n "$CUSTOM_PLAYER" ]]; then
       PLAYER="$CUSTOM_PLAYER"
+      LOOPOPT="$CUSTOM_LOOPOPT"
     elif type cvlc > /dev/null 2>&1; then
       # vlc volume ranges from 0..256
       PLAYER="cvlc --play-and-exit --volume=$((256*VOLUME/100))"
@@ -146,11 +148,13 @@ set_player(){
       PLAYER="ffplay -nodisp -autoexit"
       LOOPOPT="-loop 0"
     else
-      echo "$ERRORMSG1"
-      notify_send "$ERRORMSG1"
-      exit 1
+      if [[ "$CUSTOM_MODE" != "simple" ]]; then
+        echo "$ERRORMSG1"
+        notify_send "$ERRORMSG1"
+        CUSTOM_MODE="simple"
+      fi
     fi
-    echo "## Using $(echo "$PLAYER" | cut -d' ' -f1) for local playback ##"
+    [[ -n "$PLAYER" ]] && echo "## Using $(echo "$PLAYER" | cut -d' ' -f1) for local playback ##"
 }
 
 set_volume(){
@@ -182,8 +186,8 @@ set_mode(){
 
 setup_vars(){
     set_musicdir
-    set_mode
     set_player
+    set_mode
     set_alert
     set_volume
 }
