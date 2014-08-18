@@ -1,6 +1,10 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 15.08.2014
+
+* Added: CUSTOM_LOOPOPT to fall back to simple mode if no supported player found
+
 #### 08.08.2014
 
 * Improved: Feltzer changed some formatting and phrasing here and there
@@ -26,7 +30,7 @@
 
 #### 07.06.2014
 
-* Improved: Completely rewrote script logic. This should fix most of the issues with false positives/negatives in ad detection
+* Improved: Completely rewrote script logic to fix most false positives/negatives in ad detection
 * Improved: Added ability to skip local track in continuous mode
 * Improved: Added two new ad blocking modes (simple and interstitial)
 * Improved: Added configuration file
