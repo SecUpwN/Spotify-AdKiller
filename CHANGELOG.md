@@ -3,7 +3,8 @@
 
 #### 15.08.2014
 
-* Added: CUSTOM_LOOPOPT to fall back to simple mode if no supported player found
+* Added: CUSTOM_LOOPOPT
+* Improved: fall back to simple mode if no supported player found
 
 #### 08.08.2014
 

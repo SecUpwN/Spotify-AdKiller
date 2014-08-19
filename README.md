@@ -76,6 +76,8 @@ If you installed Spotify-AdKiller correctly a new entry called 'Spotify (AdKille
 
 The script will terminate automatically as soon as Spotify exits.
 
+**Important note:** Please make sure you don't have notifications disabled in your Spotify configuration (`ui.track_notifications_enabled=true` in `~/.config/spotify/User/<your username>/prefs`).
+
 ### Settings
 
 The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spotify-AdKiller/Spotify-AdKiller.cfg`. There are several settings that control how Spotify-AdKiller operates:
