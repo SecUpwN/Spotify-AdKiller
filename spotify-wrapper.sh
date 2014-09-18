@@ -41,6 +41,19 @@ ADKILLER="spotify-adkiller.sh"
 WMTITLE="Spotify - Linux Preview"
 LOGFILE="$HOME/.Spotify-AdKiller.log"
 
+# DNS-BLOCK
+
+# experimental support for blocking ad banners
+# Instructions: 
+# 1. download and compile dns-block.c from the experimental branch
+#    (https://github.com/SecUpwN/Spotify-AdKiller/tree/dns-block/experimental)
+# 2. create a dns-block directory in your Spotify AdKiller installation path
+# 3. Move the compiled dns-block.so library there   
+SCRIPTEXEC="$(readlink -f "$0")"
+SCRIPTDIR="${SCRIPTEXEC%/*}"
+PRELOAD_LIB="$SCRIPTDIR/dns-block/dns-block.so"
+[[ ! -f "$PRELOAD_LIB" ]] && PRELOAD_LIB=""
+
 # initialization
 
 COUNTER="0"
@@ -109,10 +122,9 @@ read_write_config(){
 }
 
 spotify_launch(){
-    spotify "$@" > /dev/null 2>&1 &
+    LD_PRELOAD="$PRELOAD_LIB" spotify "$@" > /dev/null 2>&1 &
     # wait for spotify to launch
-    # if spotify not launched after 50 seconds
-    # exit script
+    # if spotify not launched after 50 seconds exit script
     while true; do
       if [[ "$COUNTER" = "10" ]]
         then
