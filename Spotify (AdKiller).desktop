@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Spotify (AdKiller)
 GenericName=Music Player
-Comment=Listen to Spotify without ads
+Comment=Your Music - without ads!
 Icon=spotify-client
 Exec=spotify-wrapper.sh %U
 TryExec=spotify
