@@ -127,6 +127,14 @@ for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\
 - [indicator-muteads](https://launchpad.net/indicator-muteads) - blacklist-based ad-blocker written in C
 - [spotify_ad_blocker_linux.rb](https://github.com/superr4y/hacks/blob/master/spotify/spotify_ad_blocker_linux.rb) - automatic ad-blocker written in Ruby
 
+### Tips & Tricks
+
+Get **unlimited skips** on your rooted Android device!
+
+* Install [Xposed Framework](http://dl.xposed.info/latest.apk) (also on [GitHub](https://github.com/rovo89/XposedInstaller) and [XDA](http://forum.xda-developers.com/xposed))
+* Install [TableMetrics](https://mega.co.nz/#!LUs1DQwa!GC0CmwEdhebmdUtADCciPosA3orTASsxpXEwG-2h0BA) (Spotify thinks it runs on a Tablet)
+* Restart Spotify and enjoy unlimited track skipping! ;-)
+
 ### License
 
 Many people have contributed to make our script become what it is today (huge shout-out to the initial creator [pcworld](https://github.com/pcworld)). If you are like us and think that it is very sad when projects die, please accept that all code here is fully licensed under GPL v3+. Have a look at the full [License](https://github.com/SecUpwN/Spotify-AdKiller/blob/master/LICENSE).
