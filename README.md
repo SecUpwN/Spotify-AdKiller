@@ -2,7 +2,7 @@
 
 Your Party with [Spotify](https://www.spotify.com) - but without ads!
 
-![Spotify-AdKiller](http://fs1.d-h.st/view/YPg/00155/Spotify-AdKiller.png)
+[![Spotify-AdKiller](http://fs1.d-h.st/view/YPg/00155/Spotify-AdKiller.png)](https://github.com/SecUpwN/Spotify-AdKiller)
 
 We all love Spotify, but sometimes people (like us) want to throw a party without having to listen to interrupting ads before having bought [Spotify Premium](https://www.spotify.com/premium/). Well, with this killer project, now you can!
 
