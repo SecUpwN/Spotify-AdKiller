@@ -2,7 +2,7 @@
 
 Your Party with [Spotify](https://www.spotify.com) - but without ads!
 
-![Spotify-AdKiller](http://fs1.d-h.st/view/vJJ/00134/Spotify-AdKiller.png)
+![Spotify-AdKiller](http://fs1.d-h.st/view/YPg/00155/Spotify-AdKiller.png)
 
 We all love Spotify, but sometimes people (like us) want to throw a party without having to listen to interrupting ads before having bought [Spotify Premium](https://www.spotify.com/premium/). Well, with this killer project, now you can!
 
@@ -27,13 +27,18 @@ You will also need to have one of the following audio/media players installed:
   
 Please consult the Settings section below for information on setting a custom audio player.
 
-Install all utilities + VLC on **Ubuntu** with:
+[![openSUSE](https://news.opensuse.org/wp-content/uploads/2014/11/468x60.png)](http://www.opensuse.org/)
+
+Install all utilities + VLC on **[openSUSE](http://www.opensuse.org/)** with:
+
+    sudo zypper in binutils pulseaudio-utils libnotify-tools vlc
+
+[![Ubuntu](http://spreadubuntu.neomenlo.org/files/banner-468x60.png)](http://www.ubuntu.com/)
+
+Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
     sudo apt-get install x11-utils pulseaudio-utils libnotify-bin vlc
 
-Install all utilities + VLC on **openSUSE** with:
-
-    sudo zypper in binutils pulseaudio-utils libnotify-tools vlc
 
 ### Installation
 
