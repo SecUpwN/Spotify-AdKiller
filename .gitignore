@@ -1,0 +1,10 @@
+# Mac OS X clutter
+*.DS_Store
+
+# OS Generated files
+._*
+.Spotlight-V100
+.Trashes
+.directory
+ehthumbs.db
+Thumbs.db
