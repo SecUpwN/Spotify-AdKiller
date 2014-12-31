@@ -1,33 +1,52 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 31.12.2014
+
+* Updated: Small updates of `README` with re-added header artwork
+* Updated: Several style updates throughout our whole `CHANGELOG.md`
+* Changed: Launcher comment now matches wording of our respository
+* Added: `.gitignore` has been added to avoid upload of garbage
+
+---
+
 #### 15.08.2014
 
-* Added: CUSTOM_LOOPOPT
+* Added: `CUSTOM_LOOPOPT` to support your own custom loop options
 * Improved: fall back to simple mode if no supported player found
+
+---
 
 #### 08.08.2014
 
 * Improved: Feltzer changed some formatting and phrasing here and there
 * Added: Section on related projects to make people contribute there, too
 
+---
+
 #### 01.07.2014
 
-* Fix: Feltzer nuked a few Issues with the Installer and updated the README
+* Fixed: Feltzer nuked a few Issues with the Installer and updated the `README`
+
+---
 
 #### 09.06.2014
 
-* Changed: Moved config file setup from AdKiller to Wrapper
-* Improved: DEBUG setting now enables log file
-* Improved: Added DEBUG setting to configuration file
-* Fix: Set XDG paths in a more safe and generic manner
-* Improved: Check if installation directory is part of system PATH
+* Changed: Moved config file setup from AdKiller to `spotify-wrapper`
+* Improved: `DEBUG` setting now enables log file
+* Improved: Added `DEBUG` setting to configuration file
+* Improved: Check if installation directory is part of system `PATH`
 * Added: Spacing between Installer outputs and colors for Warnings
-* Fix: Corrected CONFIGDIR to be correctly detected by openSUSE
+* Fixed: Set `XDG` paths in a more safe and generic manner
+* Fixed: Corrected `CONFIGDIR` to be correctly detected by openSUSE
+
+---
 
 #### 08.06.2014
 
-* Added: XPROP/DBUS debug output to fix Issues more easily
+* Added: `XPROP/DBUS` debug output to fix Issues more easily
+
+---
 
 #### 07.06.2014
 
@@ -39,60 +58,76 @@
 * Improved: Added installation script
 * Improved: Added debug switch
 * Improved: Various other small things
-* Fix: Automatically switch to 'simple' mode if no audio files found
+* Fixed: Automatically switch to 'simple' mode if no audio files found
+
+---
 
 #### 06.06.2014
 
 * Improved: Several smaller code improvements and more comments on the code
-* Fix: Changed music directory autodetection and substring matching, added a few checks
+* Fixed: Changed music directory autodetection and substring matching, added a few checks
+
+---
 
 #### 05.06.2014
 
-* Fix: AdKiller would return false positives if song title contained double-quotes
-* Improved: Aligned variables of XPROPOUTPUT (yes, I admit it: I'm a perfectionist!)
+* Improved: Aligned variables of `XPROPOUTPUT` (yes, I admit it: I'm a perfectionist!)
 * Improved: Updated installation command for required utilities on openSUSE
-* Fix: Empty XPROP_TRACKDATA when playback paused + made DBUS parsing more safe
+* Fixed: AdKiller would return false positives if song title contained double-quotes
+* Fixed: Empty `XPROP_TRACKDATA` when playback paused + made `DBUS` parsing more safe
+
+---
 
 #### 04.06.2014
 
-* Fix: Removed a debug call to player(), which caused the script to keep on switching to local playback
-* Fix: Quoted LOCALMUSIC properly, which enables local playback if the user set a custom music path with spaces
-* Improved: Added Links to our new CHANGELOG and beautified some very tiny code snippets
-* Changed: DBUS/XPROP comparison method (old one was failing on certain special characters)
-* Changed: Reordered choose_player() by player popularity/availability
+* Improved: Added Links to our new `CHANGELOG.md` and beautified some very tiny code snippets
+* Changed: `DBUS/XPROP` comparison method (old one was failing on certain special characters)
+* Changed: Reordered `choose_player()` by player popularity/availability
+* Fixed: Removed a debug call to `player()` causing the script to keep on switching to local playback
+* Fixed: Quoted `LOCALMUSIC` properly, enabling local playback if the user set a custom music path with spaces
+
+---
 
 #### 03.06.2014
 
-* Fix: Removed literal quotation of $DBUS_TRACKDATA as recommended by jetchisel
-* Really **AWESOME FIRST PULL REQUEST** by Feltzer with huge re-write and improvements:
-* Fix: Spotify stopping when Ad plays
-* Fix: Exiting the script kills all running instances of mpv
-* Fix: Exiting script while local playback is active leaves Spotify muted
-* Fix: Script will launch multiple times when opening Spotify URIs through a browser
-* Fix: AdKiller does not start if Spotify takes to long too launch (race condition)
-* Fix: Script will mute unrelated applications under some circumstances
+* Added: Really **AWESOME FIRST PULL REQUEST** by Feltzer with huge re-write and improvements!
 * Added: Spotify-AdKiller automatically chooses music player (mpv, vlc, mplayer, mpg321, avplay or ffplay)
 * Added: Music player can be overridden with a custom music player setting
 * Added: Music player volume can now be chosen
-* Added: Spotify-AdKiller automatically chooses default Music folder based on XDG specifications
-* Improved: Changed ALERT to freedesktop standard, added a lot more comments and fixed typos
-* Improved: The README of Spotify-AdKiller now contains a section on dependencies
-* Improved: Expanded README section on installation and made it more generic
-* Improved: Added README section on settings and added important notes as well as trademark statement
+* Added: Spotify-AdKiller automatically chooses default Music folder based on `XDG` specifications
+* Improved: Changed `ALERT` to freedesktop standard, added a lot more comments and fixed typos
+* Improved: The `README` of Spotify-AdKiller now contains a section on dependencies
+* Improved: Expanded `README` section on installation and made it more generic
+* Improved: Added `README` section on settings and added important notes as well as trademark statement
+* Fixed: Spotify stopping when Ad plays
+* Fixed: Exiting the script kills all running instances of mpv
+* Fixed: Exiting script while local playback is active leaves Spotify muted
+* Fixed: Script will launch multiple times when opening Spotify URIs through a browser
+* Fixed: Spotify-AdKiller does not start if Spotify takes to long too launch (race condition)
+* Fixed: Script will mute unrelated applications under some circumstances
+* Fixed: Removed literal quotation of `$DBUS_TRACKDATA` as recommended by jetchisel
+
+---
 
 #### 02.06.2014
 
-* Added support for international naming of the local music folder which contains the MP3's
+* Added: Support for international naming of the local music folder which contains the MP3's
 
-#### 01.06.2014
+---
+
+#### 01.06.2014 - Birthday of Spotify-AdKiller!
 
 * I woke up in the middle of the night and could not sleep any longer always thinking about the script
 * My mission was to adopt this awesome script and give it a real home: Spotify-Adkiller was born! ;-)
 * Added: Attempt to call generic Spotify name (the binary is named differently on my openSUSE)
 
+---
+
 #### 30.05.3014
 
-Fix: Locale Issue where muting and unmuting didn't work anymore resolved by hairyheron
+Fixed: Locale Issue where muting and unmuting didn't work anymore resolved by hairyheron
+
+---
 
 #### 23.05.2014
 
@@ -100,57 +135,83 @@ Fix: Locale Issue where muting and unmuting didn't work anymore resolved by hair
 * The script worked great, but GitHub-Gist was a bad place to report Issues or mention Users
 * The same night, I fell in love with the original script and continously thought about it
 
+---
+
 #### 22.05.2014
 
 * Huge re-write by Feltzer to automatically mute Spotify when an ad comes on and loop an audio file
 * Instructions on how to install and use his script where also added by Feltzer in the old Gist
 
+---
+
 #### 12.04.2014
 
 * Another re-write by AmpGod to detect DBus information and support icecast audio streamer
+
+---
 
 #### 25.03.2014
 
 * Added: Code by bigeebeans to support playing a radiostream via VLC
 
+---
+
 #### 19.03.2014
 
 * Spanish users did profit from further recommendations by fernandolguevara
 
+---
+
 #### 17.03.2014
 
-* Fix for "You have to specify a sink input index and a mute boolean" by AmpGod
+* Fixed: "You have to specify a sink input index and a mute boolean" erased by AmpGod
+
+---
 
 #### 04.03.2014
 
-* Great update to support updates to icecast with song information by AmpGod
+* Updated: Script now supports icecast with song information thanks to AmpGod
+
+---
 
 #### 16.08.2013
 
-* Improvements to the code for support of language-independent locale by jakicoll
+* Improved: Code now supports language-independent locale thanks to jakicoll
+
+---
 
 #### 25.07.2013
 
 * Smaller modifications to enhance the code have been done by anupdhml
 * Discussion of the current codebase to improve playback went on for numerous days
 
+---
+
 #### 05.07.2013
 
 * Re-write of the script to support the latest version of Spotify by OlegSmelov
 * People extensively tested the very elegant method created by him - wokring awesome!
+
+---
 
 #### 16.10.2012
 
 * Useful code change for muting and unmuting Ads by sbenkk
 * Smaller improvements and chit-chat on GitHub Gist followed thereafter
 
+---
+
 #### 08.10.2012
 
 * Recommendation with code for playing internet radio instead of Ads by EDawg878
 
+---
+
 #### 30.09.2012
 
 * First recommendation with code for improvements to mute just Spotify by bim9262
+
+---
 
 #### 29.07.2012
 
