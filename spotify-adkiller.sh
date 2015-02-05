@@ -41,7 +41,7 @@ CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
 
 # settings
 
-WMTITLE="Spotify - Linux Preview"
+WMTITLE="Spotify Free - Linux Preview"
 BINARY="spotify"
 ALERT="/usr/share/sounds/freedesktop/stereo/complete.oga"
 
