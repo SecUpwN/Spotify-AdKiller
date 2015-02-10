@@ -100,7 +100,7 @@ set_musicdir(){
     else
         LOCAL_MUSIC="$CUSTOM_MUSIC"
     fi
-    
+
     echo "## Music path: $LOCAL_MUSIC ##"
 
     if [[ -z "$(find "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null )" ]]; then
@@ -119,7 +119,7 @@ set_alert(){
       ALERT="$CUSTOM_ALERT"
     else
       ALERT=""
-    fi    
+    fi
 }
 
 set_player(){
@@ -199,7 +199,7 @@ get_state(){
 
     debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
     debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
-    
+
     # get track data from xprop and the DBUS interface
     XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
     DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | \
@@ -243,7 +243,7 @@ get_state(){
           echo "LOCAL:    No"
           LOCPLAY="0"
     fi
-    
+
     debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
 }
 
@@ -346,7 +346,7 @@ automute_continuous(){
           echo "## Paused during ad by User ##"
           notify_send "Ad is still on. Please wait for a moment."
           spotify_dbus PlayPause
-    
+
     # ad finished, user unpaused/switched track
     elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
       "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "1" && "$ADFINISHED" = "1" ]]
@@ -366,7 +366,7 @@ automute_continuous(){
           unmute
           PAUSESIGNAL=0
           ADFINISHED=0
-          
+
     # ad still on, local playback finished
     elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
       "$LOCPLAY" = "0" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]

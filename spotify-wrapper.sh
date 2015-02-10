@@ -44,11 +44,11 @@ LOGFILE="$HOME/.Spotify-AdKiller.log"
 # DNS-BLOCK
 
 # experimental support for blocking ad banners
-# Instructions: 
+# Instructions:
 # 1. download and compile dns-block.c from the experimental branch
 #    (https://github.com/SecUpwN/Spotify-AdKiller/tree/dns-block/experimental)
 # 2. create a dns-block directory in your Spotify AdKiller installation path
-# 3. Move the compiled dns-block.so library there   
+# 3. Move the compiled dns-block.so library there
 SCRIPTEXEC="$(readlink -f "$0")"
 SCRIPTDIR="${SCRIPTEXEC%/*}"
 PRELOAD_LIB="$SCRIPTDIR/dns-block/dns-block.so"
@@ -118,7 +118,7 @@ read_write_config(){
     if [[ ! -f "$CONFIG_FILE" ]]; then
       echo "$CONFIG_DEFAULT" > "$CONFIG_FILE"
     fi
-    source "$CONFIG_FILE" 
+    source "$CONFIG_FILE"
 }
 
 spotify_launch(){
