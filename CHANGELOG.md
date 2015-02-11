@@ -3,7 +3,6 @@
 
 #### 09.02.2015
 
-* Updated: `spotify-wrapper.sh` now parses different Spotify title variations
 * Changed: Window title changed to newer "Spotify Free - Linux Preview"
 * Removed: Many trailing spaces removed and code cleaned a little more
 * Fixed: "Error: Spotify not found" has been fixed with new title detection
