@@ -391,6 +391,16 @@ automute_continuous(){
       then
           echo "## Keep local playback running ##"
 
+    # any other unknown condition -> restore state
+    else
+      echo "## Restoring state ##"
+      unmute
+      ADMUTE=0
+      PAUSED=0
+      LOCPLAY=0
+      PAUSESIGNAL=0
+      ADFINISHED=0
+
     fi
 }
 
@@ -424,6 +434,14 @@ automute_simple(){
     elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "0" ]]
       then
           mute
+
+    # any other unknown condition -> restore state
+    else
+      echo "## Restoring state ##"
+      unmute
+      ADMUTE=0
+      PAUSED=0
+      ADFINISHED=0
 
     fi
 }
@@ -479,6 +497,16 @@ automute_interstitial(){
       "$LOCPLAY" = "1" ]]
       then
           echo "## Keep local playback running ##"
+
+    # any other unknown condition -> restore state
+    else
+      echo "## Restoring state ##"
+      unmute
+      ADMUTE=0
+      PAUSED=0
+      LOCPLAY=0
+      PAUSESIGNAL=0
+      ADFINISHED=0
 
     fi
 }
