@@ -24,7 +24,7 @@ You will also need to have one of the following audio/media players installed:
   - mpg321
   - avplay
   - ffplay
-  
+
 Please consult the Settings section below for information on setting a custom audio player.
 
 [![openSUSE](https://news.opensuse.org/wp-content/uploads/2014/11/468x60.png)](http://www.opensuse.org/)
@@ -39,6 +39,15 @@ Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
     sudo apt-get install x11-utils pulseaudio-utils libnotify-bin vlc
 
+[![Arch Linux](https://d11xdyzr0div58.cloudfront.net/static/logos/archlinux-logo-light-90dpi.d36c53534a2b.png)](http://www.archlinux.org/)
+
+There is a PKGBUILD for  **[Arch Linux](http://www.archlinux.org/)**. To install:
+
+    curl https://aur.archlinux.org/packages/sp/spotify-adkiller/spotify-adkiller.tar.gz -O
+    tar xzf spotify-adkiller.tar.gz
+    cd spotify-adkiller
+    makepkg
+    pacman -U spotify-adkiller-10-1-any.pkg.tar.xz
 
 ### Installation
 
@@ -55,12 +64,12 @@ Run the provided installer:
 
 **Troubleshooting**
 
-- If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`. 
- 
+- If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`.
+
     You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
 
 - The installer script will install Spotify-AdKiller to `$HOME/bin`, which should be recognized by Ubuntu and openSUSE.
- 
+
 - If `$HOME/bin` didn't exist before, a relog might be necessary to complete the installation.
 
     Technical explanation: Ubuntu automatically adds `$HOME/bin` to your `PATH` if it exists when you log in. Relogging reloads `$HOME/.profile` and updates your `PATH`.
@@ -110,7 +119,7 @@ The following settings control local music playback during ads:
 - `CUSTOM_LOOPOPT`: loop option for custom player (e.g. `-loop 0`); we recommend setting this if you are planning to use interstitial adblocking mode
 - `CUSTOM_VOLUME`: volume of local playback; set to 100 by default
 - `CUSTOM_MUSIC`: local track to play / local music directory to choose tracks from; set to XDG standard music directory by default (e.g. `$HOME/Music`)
-- `CUSTOM_ALERT`: audio alert to play when switching to local playback; XDG standard 'bell' sound by default; set to `none` to disable 
+- `CUSTOM_ALERT`: audio alert to play when switching to local playback; XDG standard 'bell' sound by default; set to `none` to disable
 
 **Debug setting**
 
