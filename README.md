@@ -39,7 +39,7 @@ Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
     sudo apt-get install x11-utils pulseaudio-utils libnotify-bin vlc
 
-[![Arch Linux](https://d11xdyzr0div58.cloudfront.net/static/logos/archlinux-logo-light-90dpi.d36c53534a2b.png)](http://www.archlinux.org/)
+[![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
 
 There is a PKGBUILD for  **[Arch Linux](http://www.archlinux.org/)**. To install:
 
