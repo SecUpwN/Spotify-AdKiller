@@ -12,11 +12,11 @@
 
 #include <fnmatch.h>
 
-#define WHITELIST_LENGTH   3
+#define WHITELIST_LENGTH   5
 #define BLACKLIST_LENGTH   1
 
 const char *hostname_whitelist[WHITELIST_LENGTH] =
-    { "*.spotify.com", "*.cloudfront.net", "api.tunigo.com" };
+    { "*.spotify.com", "*.cloudfront.net", "api.tunigo.com", "apic.musixmatch.com", "mxmscripts.s3.amazonaws.com" };
     
 const char *hostname_blacklist[BLACKLIST_LENGTH] =
     { "adeventtracker.spotify.com" };
