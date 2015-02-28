@@ -201,11 +201,9 @@ get_state(){
     debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
     
     # get track data from xprop and the DBUS interface
-    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
-    DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | \
-    cut -d\" -f 2- | rev | cut -d\" -f 2- | rev)"
-    # `cut | rev | cut | rev` gets string between first and last double-quotes
-    # TODO: find a more elegant way to do this
+    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
+    DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant \
+    | cut -d\" -f 2- | sed 's/"$//g' )"
 
     echo "XPROP:    $XPROP_TRACKDATA"
     echo "DBUS:     $DBUS_TRACKDATA"
