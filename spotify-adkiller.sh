@@ -211,7 +211,7 @@ get_state(){
     # check if track paused
     if [[ "$XPROP_TRACKDATA" = "Spotify" \
     || "$XPROP_TRACKDATA" = "WM_ICON_NAME:  not found." ]] \
-    && [[ -n "$DBUS_TRACKDATA" ]]
+    && [[ -n "$DBUS_TRACKDATA" || "$INITIALRUN" = "1" ]]
       then
           echo "PAUSED:   Yes"
           PAUSED="1"
