@@ -209,9 +209,7 @@ get_state(){
     echo "DBUS:     $DBUS_TRACKDATA"
 
     # check if track paused
-    if [[ "$XPROP_TRACKDATA" = "Spotify" \
-    || "$XPROP_TRACKDATA" = "WM_ICON_NAME:  not found." ]] \
-    && [[ -n "$DBUS_TRACKDATA" || "$INITIALRUN" = "1" ]]
+    if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "WM_ICON_NAME:  not found." ]]
       then
           echo "PAUSED:   Yes"
           PAUSED="1"
@@ -221,13 +219,11 @@ get_state(){
     fi
 
     # check if track is an ad
-    if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* || -z "$DBUS_TRACKDATA" ]] \
-    && [[ "$PAUSED" = "0" ]]
+    if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
       then
           echo "AD:       Yes"
           AD="1"
-    elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* || -z "$DBUS_TRACKDATA" ]] \
-    && [[ "$PAUSED" = "1" ]]
+    elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
       then
           echo "AD:       Can't say"
           AD="0"
