@@ -64,6 +64,10 @@ Run the provided installer:
 
 **Troubleshooting**
 
+- Spotify-AdKiller has been tested to work with Spotify version 0.9.11.27.g2b1a638.81-1. If you are using an older release things might not work as expected. 
+
+    Please also note that the upcoming update to Spotify 1.0.1 will bring about a lot of changes that might end up impeding the AdKiller's ability to work properly. It might be a good idea to hold back on updating when the time comes. We will update this information as soon as we can test Spotify 1.0.1.
+
 - If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`.
 
     You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
