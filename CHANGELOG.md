@@ -1,6 +1,34 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 06.03.2015
+
+* Changed: Reverted changes related to ad detection based on empty `DBUS` output
+* Added: New section in `README`on compatibility with past and future Spotify releases
+
+---
+
+#### 04.03.2015
+
+* Fixed: Resolved false positives due to empty `DBUS` output at startup
+
+---
+
+#### 28.02.2015
+
+* Changed: Use more elegant text processing, as suggested by @quietoparado
+* Fixed: Resolved rare instances where `DBUS` output has been empty
+
+---
+
+#### 25.02.2015
+
+* Added: Arch Linux Installation Instruction including a `PKGBUILD` by @Timidger
+* Fixed: `Spotify-AdKiller` now handles unknown conditions more graciously
+* Fixed: Resolved rare startup condition where the xprop output was empty
+
+---
+
 #### 09.02.2015
 
 * Changed: Window title changed to newer "Spotify Free - Linux Preview"
