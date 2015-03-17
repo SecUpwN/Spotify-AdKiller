@@ -433,6 +433,11 @@ automute_simple(){
       then
           mute
 
+    # another ad
+    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" ]]
+      then
+          mute
+
     # any other unknown condition -> restore state
     else
       echo "## Restoring state ##"
