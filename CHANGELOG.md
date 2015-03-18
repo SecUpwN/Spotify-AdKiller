@@ -1,6 +1,12 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 17.03.2015
+
+* Added: Integrated correct muting of multiple ads when in simple operation mode
+
+---
+
 #### 06.03.2015
 
 * Changed: Reverted changes related to ad detection based on empty `DBUS` output
