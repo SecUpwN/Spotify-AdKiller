@@ -100,7 +100,7 @@ echo
 echo "## Installing files ##"
 cp -v "$SCRIPT" "$INSTALLDIR/"
 cp -v "$WRAPPER" "$INSTALLDIR/"
-[[ ! -f "$CONFIGFILE" ]] && cp -v "$CONFIGFILE" "$CONFIGDIR/"
+[[ ! -f "$CONFIGDIR/$CONFIGFILE" ]] && cp -v "$CONFIGFILE" "$CONFIGDIR/"
 cp -v "$DESKTOPFILE" "$APPDIR/"
 
 echo
