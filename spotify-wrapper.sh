@@ -90,11 +90,6 @@ CUSTOM_MUSIC=""
 # local music directory / track
 # -> set to XDG standard music directory by default
 
-CUSTOM_ALERT=""
-# alert when switching to local playback
-# - might not play if using mpg321 (sketchy ogg support)
-# -> set to XDG standard alert by default
-
 DEBUG="0"
 # control debug mode
 # - "1" to enable

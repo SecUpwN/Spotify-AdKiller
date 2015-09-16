@@ -123,7 +123,6 @@ The following settings control local music playback during ads:
 - `CUSTOM_LOOPOPT`: loop option for custom player (e.g. `-loop 0`); we recommend setting this if you are planning to use interstitial adblocking mode
 - `CUSTOM_VOLUME`: volume of local playback; set to 100 by default
 - `CUSTOM_MUSIC`: local track to play / local music directory to choose tracks from; set to XDG standard music directory by default (e.g. `$HOME/Music`)
-- `CUSTOM_ALERT`: audio alert to play when switching to local playback; XDG standard 'bell' sound by default; set to `none` to disable
 
 **Debug setting**
 

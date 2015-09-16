@@ -43,7 +43,6 @@ CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
 
 WMTITLE="Spotify Free - Linux Preview"
 BINARY="spotify"
-ALERT="/usr/share/sounds/freedesktop/stereo/complete.oga"
 
 # initialization
 
@@ -108,18 +107,6 @@ set_musicdir(){
         notify_send "$ERRORMSG3"
         CUSTOM_MODE="simple"
     fi
-}
-
-set_alert(){
-    if [[ -z "$CUSTOM_ALERT" && -f "$ALERT" ]]; then
-      ALERT="$ALERT"
-    elif [[ "$CUSTOM_ALERT" = "none" ]]; then
-      ALERT=""
-    elif [[ -f "$CUSTOM_ALERT" ]]; then
-      ALERT="$CUSTOM_ALERT"
-    else
-      ALERT=""
-    fi    
 }
 
 set_player(){
@@ -188,7 +175,6 @@ setup_vars(){
     set_musicdir
     set_player
     set_mode
-    set_alert
     set_volume
 }
 
@@ -287,7 +273,6 @@ spotify_dbus(){
 player(){
     RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
     notify_send "Playing ${RANDOM_TRACK##*/}"
-    [[ -n "$ALERT" ]] && $PLAYER "$ALERT" > /dev/null 2>&1 &  # Alert user
     $PLAYER $1 "$RANDOM_TRACK" > /dev/null 2>&1 &             # Play random track
     PLAYER_PID="$!"                                           # Get PLAYER PID
     echo "$PLAYER_PID" > "$PIDFILE"                           # Store player PID
