@@ -41,7 +41,6 @@ CONFIG_FILE="$CONFIG_PATH/Spotify-AdKiller.cfg"
 
 # settings
 
-WMTITLE="Spotify Free - Linux Preview"
 BINARY="spotify"
 
 # initialization
@@ -85,6 +84,10 @@ read_config(){
 }
 
 set_musicdir(){
+    if [[ "$AUTOMUTE" == "automute_simple" ]]; then
+        return
+    fi
+
     if [[ -z "$CUSTOM_MUSIC" ]]; then
         # get XDG default directories
         test -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" \
@@ -99,7 +102,7 @@ set_musicdir(){
     else
         LOCAL_MUSIC="$CUSTOM_MUSIC"
     fi
-    
+
     echo "## Music path: $LOCAL_MUSIC ##"
 
     if [[ -z "$(find "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null )" ]]; then
@@ -172,30 +175,28 @@ set_mode(){
 }
 
 setup_vars(){
+    set_mode
     set_musicdir
     set_player
-    set_mode
     set_volume
 }
 
 get_state(){
 
-    DBUSOUTPUT="$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
-    org.freedesktop.MediaPlayer2.GetMetadata)"
+    DBUSOUTPUT="$(./dbusiface.py)"
 
     debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
     debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
-    
+
     # get track data from xprop and the DBUS interface
     XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
-    DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant \
-    | cut -d\" -f 2- | sed 's/"$//g' )"
+    DBUS_TRACKDATA="$DBUSOUTPUT"
 
     echo "XPROP:    $XPROP_TRACKDATA"
     echo "DBUS:     $DBUS_TRACKDATA"
 
     # check if track paused
-    if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "WM_ICON_NAME:  not found." ]]
+    if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
       then
           echo "PAUSED:   Yes"
           PAUSED="1"
@@ -227,7 +228,7 @@ get_state(){
           echo "LOCAL:    No"
           LOCPLAY="0"
     fi
-    
+
     debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
 }
 
@@ -329,7 +330,7 @@ automute_continuous(){
           echo "## Paused during ad by User ##"
           notify_send "Ad is still on. Please wait for a moment."
           spotify_dbus PlayPause
-    
+
     # ad finished, user unpaused/switched track
     elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
       "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "1" && "$ADFINISHED" = "1" ]]
@@ -349,7 +350,7 @@ automute_continuous(){
           unmute
           PAUSESIGNAL=0
           ADFINISHED=0
-          
+
     # ad still on, local playback finished
     elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
       "$LOCPLAY" = "0" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
@@ -536,7 +537,7 @@ while read -r XPROPOUTPUT; do
 
     print_horiz_line
 
-done < <(xprop -spy -name "$WMTITLE" WM_ICON_NAME)  # we use process substitution instead of piping
+done < <(xprop -spy -id $(wmctrl -lx | awk -F' ' '$3 == "spotify.Spotify" {print $1}') _NET_WM_NAME)  # we use process substitution instead of piping
                                                     # to avoid executing the loop in a subshell
 
 echo "Spotify not active. Exiting."
