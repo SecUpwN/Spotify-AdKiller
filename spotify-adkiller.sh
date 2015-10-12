@@ -183,7 +183,29 @@ setup_vars(){
 
 get_state(){
 
-    DBUSOUTPUT="$(./dbusiface.py)"
+    DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata' | awk '
+      /string  *"xesam:artist/{
+        while (1) {
+          getline line
+          if (line ~ /string "/){
+            match(line, /"(.*?)"/, arr)
+            printf "%s - ",arr[1]
+            break
+          }
+        }
+      }
+      /string  *"xesam:title/{
+        while (1) {
+          getline line
+          if (line ~ /string "/){
+            match(line, /"(.*?)"/, arr)
+            printf arr[1]
+            break
+          }
+        }
+      }
+      ')
+
 
     debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
     debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"

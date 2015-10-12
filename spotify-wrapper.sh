@@ -38,7 +38,7 @@
 # settings
 
 ADKILLER="spotify-adkiller.sh"
-WMTITLE="Spotify Free - Linux Preview"
+WMTITLE="spotify"
 LOGFILE="$HOME/.Spotify-AdKiller.log"
 
 # DNS-BLOCK
