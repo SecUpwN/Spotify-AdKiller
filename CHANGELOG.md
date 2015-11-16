@@ -1,6 +1,22 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 12.11.2015
+
+* Added: Compatibility with Spotify 1.0.14 without deps on python, now parsing dbus output with `awk`
+
+#### 16.09.2015
+
+* Removed: Purged `CUSTOM_ALERT` because it was causing issues with VLC (on top of being annoying)
+
+#### 28.08.2015
+
+* Fixed: `install.sh` is now using the right folder to check for existing config files
+
+#### 19.07.2015
+
+* Added: Linked project `spotify-blacklist-mute` in our `README`
+
 #### 17.03.2015
 
 * Added: Integrated correct muting of multiple ads when in simple operation mode
