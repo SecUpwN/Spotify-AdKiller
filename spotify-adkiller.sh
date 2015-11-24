@@ -563,5 +563,3 @@ done < <(xprop -spy -id $(wmctrl -lx | awk -F' ' '$3 == "spotify.Spotify" {print
                                                     # to avoid executing the loop in a subshell
 
 echo "Spotify not active. Exiting."
-
-exit 0
