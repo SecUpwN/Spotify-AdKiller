@@ -15,6 +15,7 @@ Utilities used in the script:
   - xprop
   - pacmd
   - notify-send
+  - wmctrl
 
 You will also need to have one of the following audio/media players installed:
 
@@ -31,13 +32,13 @@ Please consult the Settings section below for information on setting a custom au
 
 Install all utilities + VLC on **[openSUSE](http://www.opensuse.org/)** with:
 
-    sudo zypper in binutils pulseaudio-utils libnotify-tools vlc
+    sudo zypper in binutils pulseaudio-utils libnotify-tools wmctrl vlc
 
 [![Ubuntu](http://spreadubuntu.neomenlo.org/files/banner-468x60.png)](http://www.ubuntu.com/)
 
 Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
-    sudo apt-get install x11-utils pulseaudio-utils libnotify-bin vlc
+    sudo apt-get install x11-utils pulseaudio-utils libnotify-bin wmctrl vlc
 
 [![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
 
