@@ -84,7 +84,7 @@ read_config(){
 }
 
 set_musicdir(){
-    if [[ "$AUTOMUTE" == "automute_simple" ]]; then
+    if [[ "$automute" == "automute_simple" ]]; then
         return
     fi
 
@@ -158,100 +158,112 @@ set_volume(){
 
 set_mode(){
     case "$CUSTOM_MODE" in
-      continuous)     AUTOMUTE="automute_continuous"
+      continuous)     automute="automute_continuous"
                       ;;
-      interstitial)   AUTOMUTE="automute_interstitial"
+      interstitial)   automute="automute_interstitial"
                       ;;
-      simple)         AUTOMUTE="automute_simple"
+      simple)         automute="automute_simple"
                       ;;
-      "")             AUTOMUTE="automute_continuous"
+      "")             automute="automute_continuous"
                       ;;
       \?)             echo "$ERRORMSG4"
                       exit 1
                       ;;
     esac
 
-    echo "## Ad block mode: $AUTOMUTE ##"
+    echo "## Ad block mode: $automute ##"
+}
+
+set_version(){
+  if dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
+    org.freedesktop.MediaPlayer2.GetMetadata > /dev/null 2>&1; then
+    SPOTIFY_VERSION="legacy"
+    xpropcommand=(xprop -spy -name "Spotify Free - Linux Preview"  WM_ICON_NAME)
+    gettrackdata="get_trackdata_legacy"
+  else
+    SPOTIFY_VERSION="beta"
+    xpropcommand=(xprop -spy -id "$WINDOWID" _NET_WM_NAME)
+    gettrackdata="get_trackdata_beta"
+  fi
+  echo "## Detected Spotify version: $SPOTIFY_VERSION ##"
+}
+
+set_windowid(){
+  WINDOWID=$(xdotool search --classname "$BINARY" | tail -1)
+  if [[ -z "$WINDOWID" ]]; then
+    echo "Spotify not active. Exiting."
+    exit 1
+  fi
 }
 
 setup_vars(){
+    set_windowid
+    set_version
     set_mode
     set_musicdir
     set_player
     set_volume
 }
 
+
+get_trackdata_beta(){
+  DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
+   org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
+  DBUS_ARTIST=$(echo "$DBUSOUTPUT"| grep xesam:artist -A 2 | grep string | cut -d\" -f 2- | sed 's/"$//g' | tail -1)
+  DBUS_TITLE=$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')
+  DBUS_TRACKDATA="$DBUS_ARTIST - $DBUS_TITLE"
+}
+
+get_trackdata_legacy(){
+  DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
+  org.freedesktop.MediaPlayer2.GetMetadata)
+  DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')"
+}
+
 get_state(){
+  XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
+  $gettrackdata
 
-    DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata' | awk '
-      /string  *"xesam:artist/{
-        while (1) {
-          getline line
-          if (line ~ /string "/){
-            match(line, /"(.*?)"/, arr)
-            printf "%s - ",arr[1]
-            break
-          }
-        }
-      }
-      /string  *"xesam:title/{
-        while (1) {
-          getline line
-          if (line ~ /string "/){
-            match(line, /"(.*?)"/, arr)
-            printf arr[1]
-            break
-          }
-        }
-      }
-      ')
+  debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
+  debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
+  echo "XPROP:    $XPROP_TRACKDATA"
+  echo "DBUS:     $DBUS_TRACKDATA"
 
+  # check if track paused
+  if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
+    then
+        echo "PAUSED:   Yes"
+        PAUSED="1"
+    else
+        echo "PAUSED:   No"
+        PAUSED="0"
+  fi
 
-    debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
-    debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
+  # check if track is an ad
+  if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
+    then
+        echo "AD:       Yes"
+        AD="1"
+  elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
+    then
+        echo "AD:       Can't say"
+        AD="0"
+    else
+        echo "AD:       No"
+        AD="0"
+  fi
 
-    # get track data from xprop and the DBUS interface
-    XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
-    DBUS_TRACKDATA="$DBUSOUTPUT"
+  # check if local player running
+  if ps -p "$ALTPID" > /dev/null 2>&1
+    then
+        echo "LOCAL:    Yes"
+        LOCPLAY="1"
+    else
+        echo "LOCAL:    No"
+        LOCPLAY="0"
+  fi
 
-    echo "XPROP:    $XPROP_TRACKDATA"
-    echo "DBUS:     $DBUS_TRACKDATA"
-
-    # check if track paused
-    if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
-      then
-          echo "PAUSED:   Yes"
-          PAUSED="1"
-      else
-          echo "PAUSED:   No"
-          PAUSED="0"
-    fi
-
-    # check if track is an ad
-    if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
-      then
-          echo "AD:       Yes"
-          AD="1"
-    elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
-      then
-          echo "AD:       Can't say"
-          AD="0"
-      else
-          echo "AD:       No"
-          AD="0"
-    fi
-
-    # check if local player running
-    if ps -p "$ALTPID" > /dev/null 2>&1
-      then
-          echo "LOCAL:    Yes"
-          LOCPLAY="1"
-      else
-          echo "LOCAL:    No"
-          LOCPLAY="0"
-    fi
-
-    debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
+  debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
 }
 
 get_pactl_nr(){
@@ -551,15 +563,15 @@ setup_vars
 
 #while read -r XPROP_TRACKDATA DBUS_TRACKDATA; do # DEBUG
 
-while read -r XPROPOUTPUT; do
+while read XPROPOUTPUT; do
 
     get_state
 
-    $AUTOMUTE
+    $automute
 
     print_horiz_line
 
-done < <(xprop -spy -id $(wmctrl -lx | awk -F' ' '$3 == "spotify.Spotify" {print $1}') _NET_WM_NAME)  # we use process substitution instead of piping
-                                                    # to avoid executing the loop in a subshell
+done < <("${xpropcommand[@]}")   # we use process substitution instead of piping
+                                 # to avoid executing the loop in a subshell
 
 echo "Spotify not active. Exiting."

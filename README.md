@@ -15,7 +15,9 @@ Utilities used in the script:
   - xprop
   - pacmd
   - notify-send
-  - wmctrl
+  - **xdotool**
+
+New dependencies are highlighted in bold. Please make sure to install these before upgrading the script.
 
 You will also need to have one of the following audio/media players installed:
 
@@ -32,13 +34,13 @@ Please consult the Settings section below for information on setting a custom au
 
 Install all utilities + VLC on **[openSUSE](http://www.opensuse.org/)** with:
 
-    sudo zypper in binutils pulseaudio-utils libnotify-tools wmctrl vlc
+    sudo zypper in binutils pulseaudio-utils libnotify-tools xdotool vlc
 
 [![Ubuntu](http://spreadubuntu.neomenlo.org/files/banner-468x60.png)](http://www.ubuntu.com/)
 
 Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
-    sudo apt-get install x11-utils pulseaudio-utils libnotify-bin wmctrl vlc
+    sudo apt-get install x11-utils pulseaudio-utils libnotify-bin xdotool vlc
 
 [![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
 
@@ -65,9 +67,7 @@ Run the provided installer:
 
 **Troubleshooting**
 
-- Spotify-AdKiller has been tested to work with Spotify version 0.9.11.27.g2b1a638.81-1. If you are using an older release things might not work as expected. 
-
-    Please also note that the upcoming update to Spotify 1.0.1 will bring about a lot of changes that might end up impeding the AdKiller's ability to work properly. It might be a good idea to hold back on updating when the time comes. We will update this information as soon as we can test Spotify 1.0.1.
+- Spotify-AdKiller has been tested to work with Spotify 0.9.x. Support for the 1.0.x beta releases has been implemented, but still needs more testing. If you run into any bugs while using Spotify-AdKiller with a Spotify beta release please report them on the bug tracker.
 
 - If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`.
 
@@ -112,9 +112,9 @@ The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spot
     + You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys).
     + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely or is shorter than the current ad, Spotify-AdKiller will switch to the next random local track in line.
 
-The default ad blocking mode is `continuous`.
+The default ad blocking mode is `simple`.
 
-Spotify-AdKiller will automatically fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
+Spotify-AdKiller will always fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
 
 **Local playback**
 
