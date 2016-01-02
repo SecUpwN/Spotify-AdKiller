@@ -1,6 +1,6 @@
 # Spotify-AdKiller (for LINUX)
 
-Your Party with [Spotify](https://www.spotify.com) - but without ads!
+Your Party with [Spotify](https://www.spotify.com) - without ads!
 
 [![Spotify-AdKiller](https://github.com/SecUpwN/Spotify-AdKiller/raw/master/Spotify-AdKiller.png)](https://github.com/SecUpwN/Spotify-AdKiller)
 
@@ -44,7 +44,7 @@ Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
 [![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
 
-There is a PKGBUILD for  **[Arch Linux](http://www.archlinux.org/)**. To install:
+There is a `PKGBUILD` for  **[Arch Linux](http://www.archlinux.org/)**. To install:
 
     curl https://aur.archlinux.org/packages/sp/spotify-adkiller/spotify-adkiller.tar.gz -O
     tar xzf spotify-adkiller.tar.gz
@@ -54,9 +54,9 @@ There is a PKGBUILD for  **[Arch Linux](http://www.archlinux.org/)**. To install
 
 ### Installation
 
-**Automated installation**
+**Automated Installation**
 
-Grab the latest release of Spotify-AdKiller:
+Grab the latest release of `Spotify-AdKiller`:
 
     git clone https://github.com/SecUpwN/Spotify-AdKiller.git
 
@@ -67,13 +67,13 @@ Run the provided installer:
 
 **Troubleshooting**
 
-- Spotify-AdKiller has been tested to work with Spotify 0.9.x. Support for the 1.0.x beta releases has been implemented, but still needs more testing. If you run into any bugs while using Spotify-AdKiller with a Spotify beta release please report them on the bug tracker.
+- `Spotify-AdKiller` has been tested to work with Spotify 0.9.x. Support for the 1.0.x beta releases has been implemented, but still needs more testing. If you run into any bugs while using `Spotify-AdKiller` with a Spotify beta release please report them on the bug tracker.
 
 - If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`.
 
     You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
 
-- The installer script will install Spotify-AdKiller to `$HOME/bin`, which should be recognized by Ubuntu and openSUSE.
+- The installer script will install `Spotify-AdKiller` to `$HOME/bin`, which should be recognized by Ubuntu and openSUSE.
 
 - If `$HOME/bin` didn't exist before, a relog might be necessary to complete the installation.
 
@@ -81,7 +81,7 @@ Run the provided installer:
 
     If the script doesn't work after relogging you can either [manually add](http://askubuntu.com/q/3744) `$HOME/bin` to your `PATH` or follow the installation instructions below. This also applies if you're using a distro that is configured differently than Ubuntu/OpenSUSE or if you want to install the script in a custom location.
 
-**Manual installation**
+**Manual Installation**
 
 1. Copy `spotify-adkiller.sh` and `spotify-wrapper.sh` to your `PATH` (e.g. `$HOME/bin` or `/usr/local/bin` on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-adkiller.sh` and `chmod +x spotify-wrapper.sh`.
 
@@ -91,15 +91,13 @@ The default configuration file will be written automatically on the first startu
 
 ### Usage
 
-If you installed Spotify-AdKiller correctly, a new entry called 'Spotify (AdKiller)' should appear in your menu. From now on please use this launcher to start Spotify.
-
-The script will terminate automatically as soon as Spotify exits.
+If you installed `Spotify-AdKiller` correctly, a new entry called `Spotify (AdKiller)` should appear in your menu. From now on please use this launcher to start Spotify. The script will terminate automatically as soon as Spotify exits.
 
 **Important note:** Please make sure you don't have notifications disabled in your Spotify configuration (`ui.track_notifications_enabled=true` in `~/.config/spotify/User/<your username>/prefs`).
 
 ### Settings
 
-The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spotify-AdKiller/Spotify-AdKiller.cfg`. There are several settings that control how Spotify-AdKiller operates:
+The configuration file for `Spotify-AdKiller` is located under `$HOME/.config/Spotify-AdKiller/Spotify-AdKiller.cfg`. There are several settings that control how `Spotify-AdKiller` operates:
 
 **Modes**
 
@@ -107,16 +105,16 @@ The configuration file for Spotify-AdKiller is located under `$HOME/.config/Spot
 
 - `simple`: mute Spotify, unmute when ad is over
 - `interstitial`: mute Spotify, play random local track, stop and unmute when ad is over
-    + If the local track is shorter than the ad, Spotify-AdKiller will automatically try to loop it. This will only work with players that support a loop option. If you are planning to use this feature with a custom player make sure to also supply a custom loop option in your configuration file.
+    + If the local track is shorter than the ad, `Spotify-AdKiller` will automatically try to loop it. This will only work with players that support a loop option. If you are planning to use this feature with a custom player make sure to also supply a custom loop option in your configuration file.
 - `continuous`: mute Spotify, play random local track, stop and unmute when track is over
     + You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys).
-    + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely or is shorter than the current ad, Spotify-AdKiller will switch to the next random local track in line.
+    + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely or is shorter than the current ad, `Spotify-AdKiller` will switch to the next random local track in line.
 
 The default ad blocking mode is `simple`.
 
-Spotify-AdKiller will always fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
+`Spotify-AdKiller` will always fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
 
-**Local playback**
+**Local Playback**
 
 The following settings control local music playback during ads:
 
@@ -125,13 +123,13 @@ The following settings control local music playback during ads:
 - `CUSTOM_VOLUME`: volume of local playback; set to 100 by default
 - `CUSTOM_MUSIC`: local track to play / local music directory to choose tracks from; set to XDG standard music directory by default (e.g. `$HOME/Music`)
 
-**Debug setting**
+**Debug Setting**
 
-You can make the CLI output more verbose and enable the log file by setting `DEBUG` to `1`. The log will be written to `$HOME/.Spotify-AdKiller.log` and replaced each time the AdKiller is run.
+You can make the CLI output more verbose and enable the log file by setting `DEBUG` to `1`. The log will be written to `$HOME/.Spotify-AdKiller.log` and replaced each time `Spotify-AdKiller` runs.
 
-### Important notes
+### Important Notes
 
-Please make sure to always use the provided launcher when running Spotify. Under some circumstances Spotify might remain muted when exiting the application. This is a technical limitation with PulseAudio. Spotify-AdKiller automatically unmutes Spotify when initially run.
+Please make sure to always use the provided launcher when running Spotify. Under some circumstances Spotify might remain muted when exiting the application. This is a technical limitation with `PulseAudio`. `Spotify-AdKiller` automatically unmutes Spotify when initially run.
 
 If, for some reason, Spotify does remain muted you can use the following command to unmute it manually while it's running:
 
@@ -139,13 +137,13 @@ If, for some reason, Spotify does remain muted you can use the following command
 for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' | cut -d \# -f2 | grep -v Spotify); do pactl set-sink-input-mute "$i" no; done
 ```
 
-### Similar projects
+### Similar Projects
 
 - [blockify](https://github.com/mikar/blockify) - automatic/blacklist-based ad-blocker written in Python
 - [indicator-muteads](https://launchpad.net/indicator-muteads) - blacklist-based ad-blocker written in C
 - [spotify_ad_blocker_linux.rb](https://github.com/superr4y/hacks/blob/master/spotify/spotify_ad_blocker_linux.rb) - automatic ad-blocker written in Ruby
 - [spotimute](https://github.com/romaindeveaud/spotimute) - automatic/blacklist-based ad-blocker written in Ruby
-- [spotify-blacklist-mute](https://github.com/ysangkok/spotify-blacklist-mute) - blacklist-based muting, written in Bash, works with version 1.0.9
+- [spotify-blacklist-mute](https://github.com/ysangkok/spotify-blacklist-mute) - blacklist-based muting, written in Bash
 
 ### License
 
