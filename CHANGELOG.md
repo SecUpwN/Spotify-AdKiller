@@ -1,6 +1,32 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 02.01.2016
+
+* Changed: Several small improvements of our `README` for better readability
+
+---
+
+#### 31.12.2015
+
+* Changed: Restored compatibility with Spotify 0.9.x while retaining compatibility with Spotify 1.0.x and future releases
+* Changed: Set default automute mode to `automute_simple`, now using more robust string manipulation
+* Removed: Purged dependencies `gawk`and `wmctrl`, added `xdotool` dependency to our `README` instead
+
+---
+
+#### 03.12.2015
+
+* Added: `wmctrl` dependency has been added to our `README` to fix `Spotify not active. Exiting.`
+
+---
+
+#### 24.11.2015
+
+* Removed: `exit 0` has been purged since bash will `exit 0`, if nothing exits with 1 before
+
+---
+
 #### 12.11.2015
 
 * Added: Compatibility with Spotify 1.0.14 without deps on python, now parsing dbus output with `awk`
