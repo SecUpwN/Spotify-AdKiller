@@ -1,6 +1,13 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 03.01.2016
+
+* Removed: Purged unmaintained projects from `Similar Projects` in our `README`
+* Added: New checkdep function to check the existence of needed dependencies
+
+---
+
 #### 02.01.2016
 
 * Changed: Several small improvements of our `README` for better readability
