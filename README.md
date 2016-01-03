@@ -140,9 +140,7 @@ for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\
 ### Similar Projects
 
 - [blockify](https://github.com/mikar/blockify) - automatic/blacklist-based ad-blocker written in Python
-- [indicator-muteads](https://launchpad.net/indicator-muteads) - blacklist-based ad-blocker written in C
 - [spotify_ad_blocker_linux.rb](https://github.com/superr4y/hacks/blob/master/spotify/spotify_ad_blocker_linux.rb) - automatic ad-blocker written in Ruby
-- [spotimute](https://github.com/romaindeveaud/spotimute) - automatic/blacklist-based ad-blocker written in Ruby
 - [spotify-blacklist-mute](https://github.com/ysangkok/spotify-blacklist-mute) - blacklist-based muting, written in Bash
 
 ### License
