@@ -179,11 +179,11 @@ set_version(){
     org.freedesktop.MediaPlayer2.GetMetadata > /dev/null 2>&1; then
     SPOTIFY_VERSION="legacy"
     xpropcommand=(xprop -spy -name "Spotify Free - Linux Preview"  WM_ICON_NAME)
-    gettrackdata="get_trackdata_legacy"
+    getstate="get_state_legacy"
   else
     SPOTIFY_VERSION="beta"
     xpropcommand=(xprop -spy -id "$WINDOWID" _NET_WM_NAME)
-    gettrackdata="get_trackdata_beta"
+    getstate="get_state_beta"
   fi
   echo "## Detected Spotify version: $SPOTIFY_VERSION ##"
 }
@@ -206,41 +206,29 @@ setup_vars(){
 }
 
 
-get_trackdata_beta(){
+get_state_beta(){
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
    org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
   DBUS_ARTIST=$(echo "$DBUSOUTPUT"| grep xesam:artist -A 2 | grep string | cut -d\" -f 2- | sed 's/"$//g' | sed -n '2p')
+  XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
   DBUS_TITLE=$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')
   DBUS_TRACKDATA="$DBUS_ARTIST - $DBUS_TITLE"
-}
-
-get_trackdata_legacy(){
-  DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
-  org.freedesktop.MediaPlayer2.GetMetadata)
-  DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')"
-}
-
-get_state(){
-  XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
-  $gettrackdata
-
-  debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
-  debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
-  echo "XPROP:    $XPROP_TRACKDATA"
-  echo "DBUS:     $DBUS_TRACKDATA"
 
   # check if track paused
-  if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
-    then
-        echo "PAUSED:   Yes"
-        PAUSED="1"
-    else
-        echo "PAUSED:   No"
-        PAUSED="0"
+  if pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\"" | grep 'state: CORKED' > /dev/null 2>&1; then
+    echo "PAUSED:   Yes"
+    PAUSED="1"
+  else
+    echo "PAUSED:   No"
+    PAUSED="0"
   fi
 
   # check if track is an ad
   if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
+    then
+        echo "AD:       Yes"
+        AD="1"
+  elif [[ "$DBUS_TRACKDATA" == " - Spotify" && "$PAUSED" = "0" ]]
     then
         echo "AD:       Yes"
         AD="1"
@@ -264,6 +252,60 @@ get_state(){
   fi
 
   debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
+}
+
+get_state_legacy(){
+  DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
+  org.freedesktop.MediaPlayer2.GetMetadata)
+
+  XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
+  DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')"
+
+  debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
+  debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
+  echo "XPROP:    $XPROP_TRACKDATA"
+  echo "DBUS:     $DBUS_TRACKDATA"
+
+  # check if track paused
+  if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
+    then
+        echo "PAUSED:   Yes"
+        PAUSED="1"
+    else
+        echo "PAUSED:   No"
+        PAUSED="0"
+  fi
+
+  # check if track is an ad
+  if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
+    then
+        echo "AD:       Yes"
+        AD="1"
+  elif [[ "$DBUS_TRACKDATA" == " - Spotify" && "$PAUSED" = "0" ]]
+    then
+        echo "AD:       Yes"
+        AD="1"
+  elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
+    then
+        echo "AD:       Can't say"
+        AD="0"
+    else
+        echo "AD:       No"
+        AD="0"
+  fi
+
+  # check if local player running
+  if ps -p "$ALTPID" > /dev/null 2>&1
+    then
+        echo "LOCAL:    Yes"
+        LOCPLAY="1"
+    else
+        echo "LOCAL:    No"
+        LOCPLAY="0"
+  fi
+
+  debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
+
 }
 
 get_pactl_nr(){
@@ -359,6 +401,14 @@ automute_continuous(){
 
     # ad, manual pause
     elif [[ "$AD" = "0" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
+      "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
+      then
+          echo "## Paused during ad by User ##"
+          notify_send "Ad is still on. Please wait for a moment."
+          spotify_dbus PlayPause
+
+    # ad, manual pause
+    elif [[ "$AD" = "1" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
       "$LOCPLAY" = "1" && "$PAUSESIGNAL" = "0" && "$ADFINISHED" = "0" ]]
       then
           echo "## Paused during ad by User ##"
@@ -565,7 +615,7 @@ setup_vars
 
 while read XPROPOUTPUT; do
 
-    get_state
+    $getstate
 
     $automute
 
