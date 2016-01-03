@@ -31,10 +31,10 @@
 
 # WARNING: This installation script has only been tested on Ubuntu and openSUSE
 
-#DEPENDENCIES
+# DEPENDENCIES
 dep=(xprop pacmd notify-send xdotool)
 
-# For text colour
+# TEXT COLOURS
 readonly RED="\033[01;31m"
 readonly GREEN="\033[01;32m"
 readonly BLUE="\033[01;34m"
@@ -43,6 +43,7 @@ readonly BOLD="\033[01m"
 readonly END="\033[0m"
 
 # VAR
+
 INSTALLDIR="$HOME/bin"
 CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"  # try to follow XDG specs
 APPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"      # try to follow XDG specs
@@ -70,36 +71,41 @@ README to manually install Spotify AdKiller.
 ERRORMSG1="\e[1;31mERROR: One or more files not found. Please make sure to \
 execute this script in the right working directory.\e[0m"
 
+ERRORMSG2="$RED$misslist not found$END\nPlease resolve these dependency errors before running the script"
+
+# FCT
+
 checkdep(){
-	for i in "${dep[@]}"; do
-        	if  ( ! which $i &>/dev/null ); then
-			miss=("${miss[@]}" "and" "$i")
-			missing="1"
-		fi
-	done
+  for i in "${dep[@]}"; do
+    if  ( ! type "$i" &>/dev/null ); then
+      miss=("${miss[@]}" "and" "$i")
+      missing="1"
+    fi
+  done
 }
 
 
 # MAIN
 
-## check if INSTALLDIR is part of PATH
-## prompt user for action
+## check for missing dependencies
 checkdep
 if [[ $missing -eq 1 ]]; then
-	misslist=$(echo ${miss[@]} | cut -c 4-)
-	echo -e " $RED$misslist not found$END\nplease solve dependencies before run the program"
-	exit 0
-else
-	if [[ ! "$PATH" == ?(*:)"$INSTALLDIR"?(:*) ]]; then
-  		echo -e "$INFOMSG1"
-  		read INSTALLCHOICE
-  		if [[ "$INSTALLCHOICE" != "y" ]]; then
-    			echo "Aborting installation."
-   		 	exit 1
-  		else
-    			echo "Proceeding with installation."
-  		fi
-	fi
+  misslist=$(echo ${miss[@]} | cut -c 4-)
+  echo -e "$ERRORMSG2"
+  exit 1
+fi
+
+## check if INSTALLDIR is part of PATH
+## prompt user for action
+if [[ ! "$PATH" == ?(*:)"$INSTALLDIR"?(:*) ]]; then
+  echo -e "$INFOMSG1"
+  read INSTALLCHOICE
+  if [[ "$INSTALLCHOICE" != "y" ]]; then
+    echo "Aborting installation."
+    exit 1
+  else
+    echo "Proceeding with installation."
+  fi
 fi
 
 ## check if all files present
