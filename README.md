@@ -44,13 +44,11 @@ Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
 [![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
 
-There is a `PKGBUILD` for  **[Arch Linux](http://www.archlinux.org/)**. To install:
+There is an [AUR Package](https://aur.archlinux.org/packages/spotify-adkiller/) for  **[Arch Linux](http://www.archlinux.org/)**. To install:
 
-    curl https://aur.archlinux.org/packages/sp/spotify-adkiller/spotify-adkiller.tar.gz -O
-    tar xzf spotify-adkiller.tar.gz
+    git clone https://aur.archlinux.org/spotify-adkiller.git
     cd spotify-adkiller
-    makepkg
-    pacman -U spotify-adkiller-10-1-any.pkg.tar.xz
+    makepkg -i
 
 ### Installation
 
