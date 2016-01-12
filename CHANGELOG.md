@@ -1,10 +1,17 @@
 # CHANGELOG of 'Spotify-AdKiller'
 --------------------------------
 
+#### 04.01.2016
+
+* Updated: Arch linux installation instructions received refreshed `AUR Package`
+
 #### 03.01.2016
 
 * Removed: Purged unmaintained projects from `Similar Projects` in our `README`
+* Updated: Ad detection method got another try to catch one more ad corner case
+* Updated: Playback status is now being determined based on `pulseaudio`
 * Added: New checkdep function to check the existence of needed dependencies
+* Fixed: Our script would sometimes fall into a loop of pausing/unpausing playback
 
 ---
 
