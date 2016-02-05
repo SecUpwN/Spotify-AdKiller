@@ -89,7 +89,7 @@ The default configuration file will be written automatically on the first startu
 
 ### Usage
 
-If you installed `Spotify-AdKiller` correctly, a new entry called `Spotify (AdKiller)` should appear in your menu. From now on please use this launcher to start Spotify. The script will terminate automatically as soon as Spotify exits.
+If you installed `Spotify-AdKiller` correctly, a new entry called `Spotify (AdKiller)` should appear in your menu. This launcher will start Spotify in ad-free mode. The script will terminate automatically as soon as Spotify exits. As mentioned before, **this is for testing purposes ONLY!** so it is advised that you use this new entry only when your purposes are **testing**.
 
 **Important note:** Please make sure you don't have notifications disabled in your Spotify configuration (`ui.track_notifications_enabled=true` in `~/.config/spotify/User/<your username>/prefs`).
 
