@@ -71,7 +71,7 @@ README to manually install Spotify AdKiller.
 ERRORMSG1="\e[1;31mERROR: One or more files not found. Please make sure to \
 execute this script in the right working directory.\e[0m"
 
-ERRORMSG2="$RED$misslist not found$END\nPlease resolve these dependency errors before running the script"
+ERRORMSG2="ERROR: Please install these missing dependencies before running the script"
 
 # FCT
 
@@ -91,6 +91,7 @@ checkdep(){
 checkdep
 if [[ $missing -eq 1 ]]; then
   misslist=$(echo ${miss[@]} | cut -c 4-)
+  echo -e "$RED$misslist not found$END"
   echo -e "$ERRORMSG2"
   exit 1
 fi
