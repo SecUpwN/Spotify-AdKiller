@@ -215,6 +215,7 @@ get_state_beta(){
   DBUS_TRACKDATA="$DBUS_ARTIST - $DBUS_TITLE"
 
   # check if track paused
+  debuginfo "$(pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\"")"
   if pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\"" | grep 'state: CORKED' > /dev/null 2>&1; then
     echo "PAUSED:   Yes"
     PAUSED="1"
