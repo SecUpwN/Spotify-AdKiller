@@ -206,7 +206,8 @@ setup_vars(){
 }
 
 
-get_state_beta(){
+get_track_info_beta(){
+  XPROPOUTPUT=$(xprop -id "$WINDOWID" _NET_WM_NAME)
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
    org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
   DBUS_ARTIST=$(echo "$DBUSOUTPUT"| grep xesam:artist -A 2 | grep string | cut -d\" -f 2- | sed 's/"$//g' | sed -n '2p')
@@ -214,11 +215,27 @@ get_state_beta(){
   DBUS_TITLE=$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')
   DBUS_TRACKDATA="$DBUS_ARTIST - $DBUS_TITLE"
 
+  debuginfo "XPROP_DEBUG: $XPROP_TRACKDATA"
+  debuginfo "DBUS_DEBUG:  $DBUS_TRACKDATA"
+}
+
+get_pactl_info_beta(){
+  pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\""
+}
+
+get_state_beta(){
+  get_track_info_beta
+
   # check if track paused
-  debuginfo "$(pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\"")"
-  if pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\"" | grep 'state: CORKED' > /dev/null 2>&1; then
-    echo "PAUSED:   Yes"
-    PAUSED="1"
+  debuginfo "$(get_pactl_info_beta)"
+  if get_pactl_info_beta | grep 'state: CORKED' > /dev/null 2>&1; then
+    # wait and recheck
+    sleep 0.75
+    if get_pactl_info_beta | grep 'state: CORKED' > /dev/null 2>&1; then
+      echo "PAUSED:   Yes"
+      PAUSED="1"
+    fi
+    get_track_info_beta
   else
     echo "PAUSED:   No"
     PAUSED="0"
