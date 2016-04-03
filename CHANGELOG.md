@@ -1,9 +1,38 @@
 # CHANGELOG of 'Spotify-AdKiller'
---------------------------------
+---------------------------------
+
+#### 03.04.2016
+
+* Changed: Now showing full path in local-track notification for more information
+* Fixed: Set default mode to `continuous` in code as specified in dafault config
+* Fixed: Set Volume of local playback before generating the `PLAYER` command
+
+---
+
+#### 24.03.2016
+
+* Changed: Now waiting a bit before determining playback status on Spotify 1.x
+* Added: Debugging output for `pulseaudio` added to ` spotify-adkiller.sh`
+
+---
+
+#### 19.03.2016
+
+* Fixed: Correctly list missing dependencies
+
+---
+
+#### 05.02.2016
+
+* Updated: Clarified intention of this project in our project `README`
+
+---
 
 #### 04.01.2016
 
 * Updated: Arch linux installation instructions received refreshed `AUR Package`
+
+---
 
 #### 03.01.2016
 
