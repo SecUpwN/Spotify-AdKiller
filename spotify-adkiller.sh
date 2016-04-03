@@ -201,8 +201,8 @@ setup_vars(){
     set_version
     set_mode
     set_musicdir
-    set_player
     set_volume
+    set_player
 }
 
 
