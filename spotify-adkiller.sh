@@ -164,7 +164,7 @@ set_mode(){
                       ;;
       simple)         automute="automute_simple"
                       ;;
-      "")             automute="automute_simple"
+      "")             automute="automute_continuous"
                       ;;
       \?)             echo "$ERRORMSG4"
                       exit 1
