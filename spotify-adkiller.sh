@@ -205,7 +205,6 @@ setup_vars(){
     set_player
 }
 
-
 get_track_info_beta(){
   XPROPOUTPUT=$(xprop -id "$WINDOWID" _NET_WM_NAME)
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
@@ -368,13 +367,13 @@ spotify_dbus(){
 player(){
     RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
     notify_send "Playing ${RANDOM_TRACK##$LOCAL_MUSIC/}"
-    $PLAYER $1 "$RANDOM_TRACK" > /dev/null 2>&1 &             # Play random track
+    ${PLAYER} $2 "$RANDOM_TRACK" > /dev/null 2>&1 &           # Play random track
     PLAYER_PID="$!"                                           # Get PLAYER PID
     echo "$PLAYER_PID" > "$PIDFILE"                           # Store player PID
     wait "$PLAYER_PID"                                        # Wait for player to
                                                               # exit before continuing
 
-    spotify_dbus PlayPause                                    # Continue Spotify playback.
+    spotify_dbus $1                                           # Continue Spotify playback.
                                                               # This triggers the xprop spy and
                                                               # subsequent actions like unmuting
 }
@@ -423,7 +422,7 @@ automute_continuous(){
       then
           echo "## Paused during ad by User ##"
           notify_send "Ad is still on. Please wait for a moment."
-          spotify_dbus PlayPause
+          spotify_dbus Play
 
     # ad, manual pause
     elif [[ "$AD" = "1" && "$PAUSED" = "1"  && "$ADMUTE" = "1" &&  \
@@ -431,7 +430,7 @@ automute_continuous(){
       then
           echo "## Paused during ad by User ##"
           notify_send "Ad is still on. Please wait for a moment."
-          spotify_dbus PlayPause
+          spotify_dbus Play
 
     # ad finished, user unpaused/switched track
     elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" &&  \
@@ -459,7 +458,7 @@ automute_continuous(){
       then
           echo "## Playing next local track ##"
           mute
-          player > /dev/null 2>&1 &
+          player Play > /dev/null 2>&1 &
           ALTPID="$!"
 
     # ad started
@@ -468,7 +467,7 @@ automute_continuous(){
       then
           echo "## Switching to local playback ##"
           mute
-          player > /dev/null 2>&1 &
+          player Play > /dev/null 2>&1 &
           ALTPID="$!"
 
     # second ad / manual unpause while ad is on
@@ -572,7 +571,7 @@ automute_interstitial(){
       then
           echo "## Paused by User during ad  ##"
           notify_send "Ad is still on. Please wait for a moment."
-          spotify_dbus PlayPause
+          spotify_dbus Play
 
     # ad started
     elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "0" &&  \
@@ -580,7 +579,7 @@ automute_interstitial(){
       then
           echo "## Switching to local playback ##"
           mute
-          player "$LOOPOPT" > /dev/null 2>&1 &
+          player Play "$LOOPOPT" > /dev/null 2>&1 &
           ALTPID="$!"
 
     # second ad / manual unpause while ad is on
