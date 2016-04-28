@@ -205,9 +205,14 @@ setup_vars(){
     set_player
 }
 
+# Convert 'This is a \"string\"' to 'This is a "string"'. Fixes https://github.com/SecUpwN/Spotify-AdKiller/issues/57.
+sanitize_xprop_output() {
+    echo "${@//\\\"/\"}"
+}
 
 get_track_info_beta(){
   XPROPOUTPUT=$(xprop -id "$WINDOWID" _NET_WM_NAME)
+  XPROPOUTPUT="$(sanitize_xprop_output "${XPROPOUTPUT}")"
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
    org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
   DBUS_ARTIST=$(echo "$DBUSOUTPUT"| grep xesam:artist -A 2 | grep string | cut -d\" -f 2- | sed 's/"$//g' | sed -n '2p')
