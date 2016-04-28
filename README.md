@@ -108,7 +108,7 @@ The configuration file for `Spotify-AdKiller` is located under `$HOME/.config/Sp
     + You can skip the local track as soon as the ad is over. To do so, simply press Play or Forward/Next in your Spotify client (or use the corresponding hotkeys).
     + Please note that the `continuous` ad blocking mode works best with tracks that are longer than the average ad duration (≈30-45s). If a custom track ends prematurely or is shorter than the current ad, `Spotify-AdKiller` will switch to the next random local track in line.
 
-The default ad blocking mode is `simple`.
+The default ad blocking mode is `continuous`.
 
 `Spotify-AdKiller` will always fall back to `simple` mode if no local tracks are found and/or if no supported music player is available on the system.
 
