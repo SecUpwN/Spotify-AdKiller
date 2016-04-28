@@ -83,6 +83,11 @@ read_config(){
     [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 }
 
+# Makes sure a string ends with a slash. This can be necessary when trying to find files in a directory via find.
+append_missing_slash() {
+    echo "${@%/}/"
+}
+
 set_musicdir(){
     if [[ "$automute" == "automute_simple" ]]; then
         return
@@ -92,7 +97,7 @@ set_musicdir(){
         # get XDG default directories
         test -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" \
         && source "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
-        LOCAL_MUSIC="${XDG_MUSIC_DIR}"
+        LOCAL_MUSIC="$(append_missing_slash "${XDG_MUSIC_DIR}")"
 
         if [[ -z "$LOCAL_MUSIC" ]]; then
             echo "$ERRORMSG2"
@@ -100,7 +105,7 @@ set_musicdir(){
             CUSTOM_MODE="simple"
         fi
     else
-        LOCAL_MUSIC="$CUSTOM_MUSIC"
+        LOCAL_MUSIC="$(append_missing_slash "${CUSTOM_MUSIC}")"
     fi
 
     echo "## Music path: $LOCAL_MUSIC ##"
