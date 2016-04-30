@@ -83,6 +83,11 @@ read_config(){
     [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 }
 
+# Makes sure a string ends with a slash. This can be necessary when trying to find files in a directory via find.
+append_missing_slash() {
+    echo "${@%/}/"
+}
+
 set_musicdir(){
     if [[ "$automute" == "automute_simple" ]]; then
         return
@@ -92,7 +97,7 @@ set_musicdir(){
         # get XDG default directories
         test -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" \
         && source "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
-        LOCAL_MUSIC="${XDG_MUSIC_DIR}"
+        LOCAL_MUSIC="$(append_missing_slash "${XDG_MUSIC_DIR}")"
 
         if [[ -z "$LOCAL_MUSIC" ]]; then
             echo "$ERRORMSG2"
@@ -100,7 +105,7 @@ set_musicdir(){
             CUSTOM_MODE="simple"
         fi
     else
-        LOCAL_MUSIC="$CUSTOM_MUSIC"
+        LOCAL_MUSIC="$(append_missing_slash "${CUSTOM_MUSIC}")"
     fi
 
     echo "## Music path: $LOCAL_MUSIC ##"
@@ -205,8 +210,14 @@ setup_vars(){
     set_player
 }
 
+# Convert 'This is a \"string\"' to 'This is a "string"'. Fixes https://github.com/SecUpwN/Spotify-AdKiller/issues/57.
+sanitize_xprop_output() {
+    echo "${@//\\\"/\"}"
+}
+
 get_track_info_beta(){
   XPROPOUTPUT=$(xprop -id "$WINDOWID" _NET_WM_NAME)
+  XPROPOUTPUT="$(sanitize_xprop_output "${XPROPOUTPUT}")"
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
    org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
   DBUS_ARTIST=$(echo "$DBUSOUTPUT"| grep xesam:artist -A 2 | grep string | cut -d\" -f 2- | sed 's/"$//g' | sed -n '2p')
@@ -377,7 +388,6 @@ player(){
                                                               # This triggers the xprop spy and
                                                               # subsequent actions like unmuting
 }
-
 
 automute_continuous(){
     # no ad, first track
@@ -610,6 +620,8 @@ restore_settings(){
     # `pactl` can only control active sinks, i.e. if Spotify isn't running we can't
     # control its mute state. So we have to resort to unmuting Spotify on every initial
     # run of this script (INITIALRUN=1)
+    # However, we can always unmute the Spotify sink if it is running.
+    if pgrep spotify &>/dev/null; then unmute; fi
 }
 
 ## PREPARATION
