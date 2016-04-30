@@ -616,6 +616,8 @@ restore_settings(){
     # `pactl` can only control active sinks, i.e. if Spotify isn't running we can't
     # control its mute state. So we have to resort to unmuting Spotify on every initial
     # run of this script (INITIALRUN=1)
+    # However, we can always unmute the Spotify sink if it is running.
+    if pgrep spotify &>/dev/null; then unmute; fi
 }
 
 ## PREPARATION
