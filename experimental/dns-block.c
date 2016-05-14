@@ -13,13 +13,13 @@
 #include <fnmatch.h>
 
 #define WHITELIST_LENGTH   5
-#define BLACKLIST_LENGTH   1
+#define BLACKLIST_LENGTH   3
 
 const char *hostname_whitelist[WHITELIST_LENGTH] =
     { "*.spotify.com", "*.cloudfront.net", "api.tunigo.com", "apic.musixmatch.com", "mxmscripts.s3.amazonaws.com" };
     
 const char *hostname_blacklist[BLACKLIST_LENGTH] =
-    { "adeventtracker.spotify.com" };
+    { "adeventtracker.spotify.com", "audio-sp-ash.spotify.com", "spclient.wg.spotify.com" };
  
 int getaddrinfo(const char *hostname, const char *service,
                 const struct addrinfo *hints, struct addrinfo **res)
