@@ -154,5 +154,5 @@ adkiller_launch(){
 ## MAIN
 
 read_write_config
-spotify_launch
+spotify_launch "$@"
 adkiller_launch
