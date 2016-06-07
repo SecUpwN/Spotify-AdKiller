@@ -4,6 +4,7 @@ GenericName=Music Player
 Comment=Your Music - without ads!
 Icon=spotify-client
 Exec=spotify-wrapper.sh %U
+# for DPI scaling: Exec=spotify-wrapper.sh --force-device-scale-factor=1.5 %U
 TryExec=spotify
 Terminal=false
 Type=Application
