@@ -79,6 +79,15 @@ Run the provided installer:
 
     If the script doesn't work after relogging you can either [manually add](http://askubuntu.com/q/3744) `$HOME/bin` to your `PATH` or follow the installation instructions below. This also applies if you're using a distro that is configured differently than Ubuntu/OpenSUSE or if you want to install the script in a custom location.
 
+- If GUI and text are too small, you can scale the application by editing the desktop file:
+
+        cd /home/<your username>/.local/share/applications
+        sudo gedit Spotify\ \(AdKiller\).desktop
+
+    Add `--force-device-scale-factor=2` to scale it with factor 2:
+
+        Exec=spotify-wrapper.sh --force-device-scale-factor=2 %U
+
 **Manual Installation**
 
 1. Copy `spotify-adkiller.sh` and `spotify-wrapper.sh` to your `PATH` (e.g. `$HOME/bin` or `/usr/local/bin` on openSUSE and Ubuntu) and make both of them executable with `chmod +x spotify-adkiller.sh` and `chmod +x spotify-wrapper.sh`.
