@@ -210,23 +210,11 @@ setup_vars(){
     set_player
 }
 
-# Convert 'This is a \"string\"' to 'This is a "string"'. Fixes https://github.com/SecUpwN/Spotify-AdKiller/issues/57.
-sanitize_xprop_output() {
-    echo "${@//\\\"/\"}"
-}
-
 get_track_info_beta(){
-  XPROPOUTPUT=$(xprop -id "$WINDOWID" _NET_WM_NAME)
-  XPROPOUTPUT="$(sanitize_xprop_output "${XPROPOUTPUT}")"
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
    org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
-  DBUS_ARTIST=$(echo "$DBUSOUTPUT"| grep xesam:artist -A 2 | grep string | cut -d\" -f 2- | sed 's/"$//g' | sed -n '2p')
-  XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
-  DBUS_TITLE=$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')
-  DBUS_TRACKDATA="$DBUS_ARTIST - $DBUS_TITLE"
 
-  debuginfo "XPROP_DEBUG: $XPROP_TRACKDATA"
-  debuginfo "DBUS_DEBUG:  $DBUS_TRACKDATA"
+  DBUS_TRACK=$(echo "$DBUSOUTPUT" | grep xesam:trackNumber -A 1 | grep variant | awk '{ printf $3; }')
 }
 
 get_pactl_info_beta(){
@@ -251,22 +239,12 @@ get_state_beta(){
     PAUSED="0"
   fi
 
-  # check if track is an ad
-  if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
-    then
-        echo "AD:       Yes"
-        AD="1"
-  elif [[ "$DBUS_TRACKDATA" == " - Spotify" && "$PAUSED" = "0" ]]
-    then
-        echo "AD:       Yes"
-        AD="1"
-  elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
-    then
-        echo "AD:       Can't say"
-        AD="0"
-    else
-        echo "AD:       No"
-        AD="0"
+  if [[ "$DBUS_TRACK" == "0" ]]; then
+    echo "AD:       Yes"
+    AD="1"
+  else
+    echo "AD:       No"
+    AD="0"
   fi
 
   # check if local player running
@@ -287,12 +265,10 @@ get_state_legacy(){
   org.freedesktop.MediaPlayer2.GetMetadata)
 
   XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
-  DBUS_TRACKDATA="$(echo "$DBUSOUTPUT" | grep xesam:title -A 1 | grep variant | cut -d\" -f 2- | sed 's/"$//g')"
 
   debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
   debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
   echo "XPROP:    $XPROP_TRACKDATA"
-  echo "DBUS:     $DBUS_TRACKDATA"
 
   # check if track paused
   if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
@@ -304,22 +280,12 @@ get_state_legacy(){
         PAUSED="0"
   fi
 
-  # check if track is an ad
-  if [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "0" ]]
-    then
-        echo "AD:       Yes"
-        AD="1"
-  elif [[ "$DBUS_TRACKDATA" == " - Spotify" && "$PAUSED" = "0" ]]
-    then
-        echo "AD:       Yes"
-        AD="1"
-  elif [[ ! "$XPROP_TRACKDATA" == *"$DBUS_TRACKDATA"* && "$PAUSED" = "1" ]]
-    then
-        echo "AD:       Can't say"
-        AD="0"
-    else
-        echo "AD:       No"
-        AD="0"
+  if [[ "$DBUS_TRACK" == "0" ]]; then
+    echo "AD:       Yes"
+    AD="1"
+  else
+    echo "AD:       No"
+    AD="0"
   fi
 
   # check if local player running
@@ -639,8 +605,6 @@ trap restore_settings EXIT
 setup_vars
 
 ## MAIN
-
-#while read -r XPROP_TRACKDATA DBUS_TRACKDATA; do # DEBUG
 
 while read XPROPOUTPUT; do
 
