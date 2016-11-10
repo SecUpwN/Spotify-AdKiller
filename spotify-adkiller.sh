@@ -179,20 +179,6 @@ set_mode(){
     echo "## Ad block mode: $automute ##"
 }
 
-set_version(){
-  if dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
-    org.freedesktop.MediaPlayer2.GetMetadata > /dev/null 2>&1; then
-    SPOTIFY_VERSION="legacy"
-    xpropcommand=(xprop -spy -name "Spotify Free - Linux Preview"  WM_ICON_NAME)
-    getstate="get_state_legacy"
-  else
-    SPOTIFY_VERSION="beta"
-    xpropcommand=(xprop -spy -id "$WINDOWID" _NET_WM_NAME)
-    getstate="get_state_beta"
-  fi
-  echo "## Detected Spotify version: $SPOTIFY_VERSION ##"
-}
-
 set_windowid(){
   WINDOWID=$(xdotool search --classname "$BINARY" | tail -1)
   if [[ -z "$WINDOWID" ]]; then
@@ -203,37 +189,36 @@ set_windowid(){
 
 setup_vars(){
     set_windowid
-    set_version
     set_mode
     set_musicdir
     set_volume
     set_player
 }
 
-get_track_info_beta(){
+get_track_info(){
   DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 \
    org.freedesktop.DBus.Properties.Get  string:'org.mpris.MediaPlayer2.Player' string:'Metadata')
 
   DBUS_TRACK=$(echo "$DBUSOUTPUT" | grep xesam:trackNumber -A 1 | grep variant | awk '{ printf $3; }')
 }
 
-get_pactl_info_beta(){
+get_pactl_info(){
   pacmd list-sink-inputs | grep -B 25 "application.process.binary = \"$BINARY\""
 }
 
-get_state_beta(){
-  get_track_info_beta
+get_state(){
+  get_track_info
 
   # check if track paused
-  debuginfo "$(get_pactl_info_beta)"
-  if get_pactl_info_beta | grep 'state: CORKED' > /dev/null 2>&1; then
+  debuginfo "$(get_pactl_info)"
+  if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
     # wait and recheck
     sleep 0.75
-    if get_pactl_info_beta | grep 'state: CORKED' > /dev/null 2>&1; then
+    if get_pactl_info | grep 'state: CORKED' > /dev/null 2>&1; then
       echo "PAUSED:   Yes"
       PAUSED="1"
     fi
-    get_track_info_beta
+    get_track_info
   else
     echo "PAUSED:   No"
     PAUSED="0"
@@ -258,48 +243,6 @@ get_state_beta(){
   fi
 
   debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
-}
-
-get_state_legacy(){
-  DBUSOUTPUT=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify / \
-  org.freedesktop.MediaPlayer2.GetMetadata)
-
-  XPROP_TRACKDATA="$(echo "$XPROPOUTPUT" | cut -d\" -f 2- | sed 's/"$//g')"
-
-  debuginfo "XPROP_DEBUG: $XPROPOUTPUT"
-  debuginfo "DBUS_DEBUG:  $DBUSOUTPUT"
-  echo "XPROP:    $XPROP_TRACKDATA"
-
-  # check if track paused
-  if [[ "$XPROP_TRACKDATA" = "Spotify" || "$XPROP_TRACKDATA" = "_NET_WM_NAME:  not found." ]]
-    then
-        echo "PAUSED:   Yes"
-        PAUSED="1"
-    else
-        echo "PAUSED:   No"
-        PAUSED="0"
-  fi
-
-  if [[ "$DBUS_TRACK" == "0" ]]; then
-    echo "AD:       Yes"
-    AD="1"
-  else
-    echo "AD:       No"
-    AD="0"
-  fi
-
-  # check if local player running
-  if ps -p "$ALTPID" > /dev/null 2>&1
-    then
-        echo "LOCAL:    Yes"
-        LOCPLAY="1"
-    else
-        echo "LOCAL:    No"
-        LOCPLAY="0"
-  fi
-
-  debuginfo "admute: $ADMUTE; pausesignal: $PAUSESIGNAL; adfinished: $ADFINISHED"
-
 }
 
 get_pactl_nr(){
@@ -608,13 +551,14 @@ setup_vars
 
 while read XPROPOUTPUT; do
 
-    $getstate
+    get_state
 
     $automute
 
     print_horiz_line
 
-done < <("${xpropcommand[@]}")   # we use process substitution instead of piping
-                                 # to avoid executing the loop in a subshell
+done < <(xprop -spy -id "$WINDOWID" _NET_WM_NAME)
+# we use process substitution instead of piping
+# to avoid executing the loop in a subshell
 
 echo "Spotify not active. Exiting."
