@@ -52,16 +52,6 @@ LOCPLAY=0
 PAUSESIGNAL=0
 ADFINISHED=0
 
-## CLI MESSAGES
-
-ERRORMSG1="ERROR: No supported audio player detected. Please install one of the supported \
-players or define a custom player by setting CUSTOM_PLAYER.
-Switching to simple automute (no local playback)"
-ERRORMSG2="ERROR: Default music folder not found. Please set a custom location.
-Switching to simple automute (no local playback)"
-ERRORMSG3="ERROR: No music found in the specified location. Please check the settings. \
-Switching to simple automute (no local playback)"
-
 ## FUNCTIONS
 
 debuginfo(){
@@ -73,6 +63,11 @@ debuginfo(){
 
 notify_send(){
     notify-send -i spotify-client "Spotify-AdKiller" "$1"
+}
+
+report_error(){
+    echo "ERROR: $1"
+    notify_send "ERROR: $1"
 }
 
 print_horiz_line(){
@@ -100,8 +95,9 @@ set_musicdir(){
         LOCAL_MUSIC="$(append_missing_slash "${XDG_MUSIC_DIR}")"
 
         if [[ -z "$LOCAL_MUSIC" ]]; then
-            echo "$ERRORMSG2"
-            notify_send "$ERRORMSG2"
+            report_error "Default music folder not found. Please set a custom location.
+Switching to simple automute (no local playback)"
+
             CUSTOM_MODE="simple"
         fi
     else
@@ -111,8 +107,8 @@ set_musicdir(){
     echo "## Music path: $LOCAL_MUSIC ##"
 
     if [[ -z "$(find "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null )" ]]; then
-        echo "$ERRORMSG3"
-        notify_send "$ERRORMSG3"
+        report_error "No music found in the specified location. Please check the settings.
+Switching to simple automute (no local playback)"
         CUSTOM_MODE="simple"
     fi
 }
@@ -144,8 +140,10 @@ set_player(){
       LOOPOPT="-loop 0"
     else
       if [[ "$CUSTOM_MODE" != "simple" ]]; then
-        echo "$ERRORMSG1"
-        notify_send "$ERRORMSG1"
+        report_error "No supported audio player detected. Please install one of the supported \
+players or define a custom player by setting CUSTOM_PLAYER.
+Switching to simple automute (no local playback)"
+
         CUSTOM_MODE="simple"
       fi
     fi
@@ -171,7 +169,7 @@ set_mode(){
                       ;;
       "")             automute="automute_continuous"
                       ;;
-      \?)             echo "$ERRORMSG4"
+      *)              report_error "Unsupported CUSTOM_MODE"
                       exit 1
                       ;;
     esac
