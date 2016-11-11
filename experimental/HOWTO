@@ -1,7 +1,6 @@
 Compile:
 
-$ gcc -Wall -fPIC -c -o dns-block.o dns-block.c
-$ gcc -shared -fPIC -Wl,-soname -Wl,dns-block.so -ldl -o dns-block.so dns-block.o
+$ make
 
 Run:
 
