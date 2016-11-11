@@ -407,49 +407,10 @@ automute_continuous(){
 }
 
 automute_simple(){
-    # no ad, first track
-    if [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
-     "$INITIALRUN" = "1" ]]
-      then
-          echo "## Initial run ##"
-          unmute
-          INITIALRUN="0"
-
-    # no ad, regular track
-    elif [[ "$AD" = "0" && "$PAUSED" = "0" && "$ADMUTE" = "0" &&  \
-     "$INITIALRUN" = "0" ]]
-      then
-          echo "## Regular track ##"
-
-    # no ad, regular pause
-    elif [[ "$AD" = "0" && "$PAUSED" = "1" && "$ADMUTE" = "0" &&  \
-     "$INITIALRUN" = "0" ]]
-      then
-          echo "## Paused by User ##"
-
-    # ad finished
-    elif [[ "$AD" = "0" && "$PAUSED" = "0"  && "$ADMUTE" = "1" ]]
-      then
-          unmute
-
-    # ad started
-    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "0" ]]
-      then
-          mute
-
-    # another ad
-    elif [[ "$AD" = "1" && "$PAUSED" = "0"  && "$ADMUTE" = "1" ]]
-      then
-          mute
-
-    # any other unknown condition -> restore state
-    else
-      echo "## Restoring state ##"
-      unmute
-      ADMUTE=0
-      PAUSED=0
-      ADFINISHED=0
-
+    if [[ "$AD" = "0" ]]; then
+        unmute
+    elif [[ "$AD" = "1" ]]; then
+        mute
     fi
 }
 
