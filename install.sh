@@ -115,11 +115,6 @@ if [[ ! -f "$SCRIPT" || ! -f "$WRAPPER" || ! -f "$CONFIGFILE" ]]; then
   exit 1
 fi
 
-## if $APPDIR is missing then create it
-if [[ ! -d "$APPDIR" ]]; then
- mkdir -vp "$APPDIR"
-fi
-
 echo
 
 echo "## Changing permissions ##"
@@ -131,6 +126,7 @@ echo
 echo "## Creating installation directories ##"
 mkdir -vp "$INSTALLDIR"
 mkdir -vp "$CONFIGDIR"
+mkdir -vp "$APPDIR"
 
 echo
 
