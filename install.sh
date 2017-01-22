@@ -126,6 +126,7 @@ echo
 echo "## Creating installation directories ##"
 mkdir -vp "$INSTALLDIR"
 mkdir -vp "$CONFIGDIR"
+mkdir -vp "$APPDIR"
 
 echo
 
