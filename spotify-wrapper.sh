@@ -73,7 +73,7 @@ CUSTOM_MODE=""
 # - simple        — mute Spotify, unmute when ad is over
 # - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
 # - continuous    — mute Spotify, play random local track, stop and unmute when track is over
-# -> set to continuous by default
+# -> set to simple by default
 
 CUSTOM_PLAYER=""
 CUSTOM_LOOPOPT=""
