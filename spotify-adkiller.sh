@@ -106,7 +106,7 @@ Switching to simple automute (no local playback)"
 
     echo "## Music path: $LOCAL_MUSIC ##"
 
-    if [[ -z "$(find "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null )" ]]; then
+    if [[ -z "$(find -L "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null )" ]]; then
         report_error "No music found in the specified location. Please check the settings.
 Switching to simple automute (no local playback)"
         CUSTOM_MODE="simple"
@@ -283,7 +283,7 @@ spotify_dbus(){
 }
 
 player(){
-    RANDOM_TRACK="$(find "$LOCAL_MUSIC" -iname "*.mp3" | sort --random-sort | head -1)"
+    RANDOM_TRACK="$(find -L "$LOCAL_MUSIC" -iname "*.mp3" 2> /dev/null | sort --random-sort | head -1)"
     notify_send "Playing ${RANDOM_TRACK##$LOCAL_MUSIC/}"
     ${PLAYER} $2 "$RANDOM_TRACK" > /dev/null 2>&1 &           # Play random track
     PLAYER_PID="$!"                                           # Get PLAYER PID
