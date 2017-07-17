@@ -51,6 +51,7 @@ PAUSED=0
 LOCPLAY=0
 PAUSESIGNAL=0
 ADFINISHED=0
+INHIBIT_COOKIE=0
 
 ## FUNCTIONS
 
@@ -68,6 +69,20 @@ notify_send(){
 report_error(){
     echo "ERROR: $1"
     notify_send "ERROR: $1"
+}
+
+inhibit_pm(){
+    if [[ "$INHIBIT_POWERMANAGEMENT" = "1" ]]
+    then
+          INHIBIT_COOKIE=`dbus-send --print-reply --dest=org.freedesktop.PowerManagement /org/freedesktop/PowerManagement/Inhibit org.freedesktop.PowerManagement.Inhibit.Inhibit string:"Spotify" string:"Playing Music" | grep uint32 | awk '{print $2}'`
+    fi
+}
+
+uninhibit_pm(){
+    if [[ "$INHIBIT_POWERMANAGEMENT" = "1" ]]
+    then
+          dbus-send --print-reply --dest=org.freedesktop.PowerManagement /org/freedesktop/PowerManagement/Inhibit org.freedesktop.PowerManagement.Inhibit.UnInhibit uint32:$INHIBIT_COOKIE
+    fi
 }
 
 print_horiz_line(){
@@ -514,10 +529,18 @@ while read XPROPOUTPUT; do
 
     $automute
 
+    if [[ "$PAUSED" == "0" ]]
+    then
+        inhibit_pm
+    else
+        uninhibit_pm
+    fi
+
     print_horiz_line
 
 done < <(xprop -spy -id "$WINDOWID" _NET_WM_NAME)
 # we use process substitution instead of piping
 # to avoid executing the loop in a subshell
 
+uninhibit_pm
 echo "Spotify not active. Exiting."
