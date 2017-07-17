@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Spotify (AdKiller)
 GenericName=Music Player
+GenericName[pl]=Odtwarzacz muzyki
 Comment=Your Music - without ads!
+Comment[pl]=Twoja muzyka – bez reklam!
 Icon=spotify-client
 Exec=spotify-wrapper.sh %U
 # for DPI scaling: Exec=spotify-wrapper.sh --force-device-scale-factor=1.5 %U
