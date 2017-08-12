@@ -102,6 +102,7 @@ cp -v "$SCRIPT" "$INSTALLDIR/"
 cp -v "$WRAPPER" "$INSTALLDIR/"
 [[ ! -f "$CONFIGFILE" ]] && cp -v "$CONFIGFILE" "$CONFIGDIR/"
 cp -v "$DESKTOPFILE" "$APPDIR/"
+chmod +x "$APPDIR/$DESKTOPFILE" 
 
 echo
 
