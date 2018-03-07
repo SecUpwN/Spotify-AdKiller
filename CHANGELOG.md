@@ -1,6 +1,10 @@
 # CHANGELOG of 'Spotify-AdKiller'
 ---------------------------------
 
+#### 07.03.2018
+
+* Changed: Use DNS blocking instead of muting
+
 #### 03.04.2016
 
 * Changed: Now showing full path in local-track notification for more information
