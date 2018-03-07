@@ -32,7 +32,7 @@
 # WARNING: This installation script has only been tested on Ubuntu and openSUSE
 
 # DEPENDENCIES
-dep=(xprop pacmd notify-send xdotool)
+dep=(gcc make)
 
 # TEXT COLOURS
 readonly RED="\033[01;31m"
@@ -48,9 +48,8 @@ INSTALLDIR="$HOME/bin"
 CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"  # try to follow XDG specs
 APPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"      # try to follow XDG specs
 
-SCRIPT="spotify-adkiller.sh"
+LIBRARY="dns-block.so"
 WRAPPER="spotify-wrapper.sh"
-CONFIGFILE="Spotify-AdKiller.cfg"
 DESKTOPFILE="Spotify (AdKiller).desktop"
 
 INFOMSG1="\e[1;93mWARNING: $INSTALLDIR is not part of your PATH. Your current PATH:
@@ -61,7 +60,7 @@ INFOMSG1="\e[1;93mWARNING: $INSTALLDIR is not part of your PATH. Your current PA
 This will update your PATH and make the script available to your system.
 
 \e[0mIf the launcher doesn't work after relogging you will have to manually add
-$INSTALLDIR to your PATH variable. 
+$INSTALLDIR to your PATH variable.
 
 Alternatively you could abort this installation and follow the instructions in the
 README to manually install Spotify AdKiller.
@@ -71,27 +70,10 @@ README to manually install Spotify AdKiller.
 ERRORMSG1="\e[1;31mERROR: One or more files not found. Please make sure to \
 execute this script in the right working directory.\e[0m"
 
-ERRORMSG2="ERROR: Please install these missing dependencies before running the script"
-
-# FCT
-
-checkdep(){
-  for i in "${dep[@]}"; do
-    if  ( ! type "$i" &>/dev/null ); then
-      miss=("${miss[@]}" "and" "$i")
-      missing="1"
-    fi
-  done
-}
+ERRORMSG2="ERROR: Run make to build dns-block.so first"
 
 
-# MAIN
-
-## check for missing dependencies
-checkdep
-if [[ $missing -eq 1 ]]; then
-  misslist=$(echo ${miss[@]} | cut -c 4-)
-  echo -e "$RED$misslist not found$END"
+if [[ ! -f "$LIBRARY" ]]; then
   echo -e "$ERRORMSG2"
   exit 1
 fi
@@ -110,7 +92,7 @@ if [[ ! "$PATH" == ?(*:)"$INSTALLDIR"?(:*) ]]; then
 fi
 
 ## check if all files present
-if [[ ! -f "$SCRIPT" || ! -f "$WRAPPER" || ! -f "$CONFIGFILE" ]]; then
+if [[ ! -f "$WRAPPER" ]]; then
   echo -e "$ERRORMSG1"
   exit 1
 fi
@@ -118,7 +100,7 @@ fi
 echo
 
 echo "## Changing permissions ##"
-chmod -v +x "$SCRIPT"
+chmod -v +x "$LIBRARY"
 chmod -v +x "$WRAPPER"
 
 echo
@@ -131,9 +113,8 @@ mkdir -vp "$APPDIR"
 echo
 
 echo "## Installing files ##"
-cp -v "$SCRIPT" "$INSTALLDIR/"
+cp -v "$LIBRARY" "$INSTALLDIR/"
 cp -v "$WRAPPER" "$INSTALLDIR/"
-[[ ! -f "$CONFIGDIR/$CONFIGFILE" ]] && cp -v "$CONFIGFILE" "$CONFIGDIR/"
 cp -v "$DESKTOPFILE" "$APPDIR/"
 
 echo
