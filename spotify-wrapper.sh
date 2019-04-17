@@ -121,7 +121,7 @@ spotify_launch(){
     # wait for spotify to launch
     # if spotify not launched after 50 seconds exit script
     while true; do
-      if [[ "$COUNTER" = "10" ]]
+      if [[ "$COUNTER" = "200" ]]
         then
             notify_send "$ERRORMSG1"
             echo "$ERRORMSG1"
@@ -133,7 +133,7 @@ spotify_launch(){
         break
       fi
       COUNTER=$(( COUNTER + 1 ))
-      sleep 5
+      sleep 0.25
     done
 }
 
