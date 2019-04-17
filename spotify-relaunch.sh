@@ -117,7 +117,8 @@ read_write_config(){
 }
 
 spotify_relaunch(){
-    # close spotify
+    # close adkiller and then spotify
+    kill $(pgrep "${ADKILLER:0:14}")
     kill $(pgrep -x spotify)
     while true; do
       if [[ "$COUNTER" = "100" ]]
