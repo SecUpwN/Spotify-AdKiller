@@ -57,6 +57,7 @@ PRELOAD_LIB="$SCRIPTDIR/dns-block/dns-block.so"
 # initialization
 
 COUNTER="0"
+RESTART="0"
 
 # config
 
@@ -70,10 +71,14 @@ CONFIG_DEFAULT=\
 
 CUSTOM_MODE=""
 # ad block mode. possible values:
+# - restart       — close Spotify, restart, minimize, and "press play"
 # - simple        — mute Spotify, unmute when ad is over
 # - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
 # - continuous    — mute Spotify, play random local track, stop and unmute when track is over
 # -> set to continuous by default
+
+RESTART_MINIMIZED="0"
+# if CUSTOM_MODE = "restart" Spotify should automaticaly be minimized? 1=yes
 
 CUSTOM_PLAYER=""
 CUSTOM_LOOPOPT=""
@@ -116,12 +121,40 @@ read_write_config(){
     source "$CONFIG_FILE"
 }
 
+spotify_close(){
+    # if spotify is not open, skip
+    if [[ $(pgrep -xi "$WMCLASS") == '' ]]; then
+      echo '## Spotify Closed ##'
+    else
+      # set the "restart" flag
+      RESTART="1"
+      # close adkiller and then spotify
+      kill $(pgrep "${ADKILLER:0:14}")
+      kill $(pgrep -xi "$WMCLASS")
+      while true; do
+        if [[ "$COUNTER" = "100" ]]
+          then
+              notify_send "$ERRORMSG1"
+              echo "$ERRORMSG1"
+              exit 1
+        fi
+        echo "## Waiting for Spotify to close ##"
+        if [[ $(pgrep -xi "$WMCLASS") == '' ]]; then
+          echo '## Spotify Closed ##'
+          break
+        fi
+        COUNTER=$(( COUNTER + 1 ))
+        sleep 0.25
+      done
+    fi
+}
+
 spotify_launch(){
     LD_PRELOAD="$PRELOAD_LIB" spotify "$@" > /dev/null 2>&1 &
     # wait for spotify to launch
     # if spotify not launched after 50 seconds exit script
     while true; do
-      if [[ "$COUNTER" = "10" ]]
+      if [[ "$COUNTER" = "200" ]]
         then
             notify_send "$ERRORMSG1"
             echo "$ERRORMSG1"
@@ -130,10 +163,19 @@ spotify_launch(){
       echo "## Waiting for Spotify ##"
       xdotool search --classname "$WMCLASS" > /dev/null 2>&1
       if [[ "$?" == "0" ]]; then
+        if [[ "$CUSTOM_MODE" == "restart" && "$RESTART" == "1" ]]
+          then
+            qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
+            if [[ "$RESTART_MINIMIZED" == "1" ]]
+              then
+                sleep 0.25
+                xdotool windowminimize $(xdotool getactivewindow)
+            fi
+        fi
         break
       fi
       COUNTER=$(( COUNTER + 1 ))
-      sleep 5
+      sleep 0.25
     done
 }
 
@@ -154,5 +196,9 @@ adkiller_launch(){
 ## MAIN
 
 read_write_config
+if [[ "$CUSTOM_MODE" == "restart" ]]
+  then
+    spotify_close
+fi
 spotify_launch "$@"
 adkiller_launch

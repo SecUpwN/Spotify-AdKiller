@@ -110,6 +110,7 @@ The configuration file for `Spotify-AdKiller` is located under `$HOME/.config/Sp
 
 `CUSTOM_MODE` controls the ad blocking mode. The following modes are available:
 
+- `restart`: close Spotify, restart, minimize, and "press play"
 - `simple`: mute Spotify, unmute when ad is over
 - `interstitial`: mute Spotify, play random local track, stop and unmute when ad is over
     + If the local track is shorter than the ad, `Spotify-AdKiller` will automatically try to loop it. This will only work with players that support a loop option. If you are planning to use this feature with a custom player make sure to also supply a custom loop option in your configuration file.
