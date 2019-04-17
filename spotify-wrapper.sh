@@ -58,6 +58,7 @@ PRELOAD_LIB="$SCRIPTDIR/dns-block/dns-block.so"
 
 COUNTER="0"
 RESTART="0"
+
 # config
 
 CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
@@ -75,6 +76,9 @@ CUSTOM_MODE=""
 # - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
 # - continuous    — mute Spotify, play random local track, stop and unmute when track is over
 # -> set to continuous by default
+
+RESTART_MINIMIZED="0"
+# if CUSTOM_MODE = "restart" Spotify should automaticaly be minimized? 1=yes
 
 CUSTOM_PLAYER=""
 CUSTOM_LOOPOPT=""
@@ -162,8 +166,11 @@ spotify_launch(){
         if [[ "$CUSTOM_MODE" == "restart" && "$RESTART" == "1" ]]
           then
             qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
-            sleep 0.25
-            xdotool windowminimize $(xdotool getactivewindow)
+            if [[ "$RESTART_MINIMIZED" == "1" ]]
+              then
+                sleep 0.25
+                xdotool windowminimize $(xdotool getactivewindow)
+            fi
         fi
         break
       fi
