@@ -70,6 +70,7 @@ CONFIG_DEFAULT=\
 
 CUSTOM_MODE=""
 # ad block mode. possible values:
+# - restart       — close Spotify, restart, minimize, and "press play"
 # - simple        — mute Spotify, unmute when ad is over
 # - interstitial  — mute Spotify, play random local track, stop and unmute when ad is over
 # - continuous    — mute Spotify, play random local track, stop and unmute when track is over
