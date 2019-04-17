@@ -131,6 +131,12 @@ spotify_launch(){
       echo "## Waiting for Spotify ##"
       xdotool search --classname "$WMCLASS" > /dev/null 2>&1
       if [[ "$?" == "0" ]]; then
+        if [[ "$CUSTOM_MODE" == "restart" && "$1" == "RESTART" ]]
+          then
+            qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
+            sleep 0.25
+            xdotool windowminimize $(xdotool getactivewindow)
+        fi
         break
       fi
       COUNTER=$(( COUNTER + 1 ))
@@ -155,5 +161,9 @@ adkiller_launch(){
 ## MAIN
 
 read_write_config
+if [[ "$CUSTOM_MODE" == "restart" && "$1" == "RESTART" ]]
+  then
+    echo "close"
+fi
 spotify_launch "$@"
 adkiller_launch

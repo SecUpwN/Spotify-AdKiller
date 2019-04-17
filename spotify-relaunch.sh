@@ -117,7 +117,7 @@ read_write_config(){
     source "$CONFIG_FILE"
 }
 
-spotify_relaunch(){
+spotify_close(){
     # close adkiller and then spotify
     kill $(pgrep "${ADKILLER:0:14}")
     kill $(pgrep -x spotify)
@@ -136,45 +136,9 @@ spotify_relaunch(){
       COUNTER=$(( COUNTER + 1 ))
       sleep 0.25
     done
-    ##sleep 5
-    LD_PRELOAD="$PRELOAD_LIB" spotify "$@" > /dev/null 2>&1 &
-    # wait for spotify to launch
-    # if spotify not launched after 50 seconds exit script
-    while true; do
-      if [[ "$COUNTER" = "100" ]]
-        then
-            notify_send "$ERRORMSG1"
-            echo "$ERRORMSG1"
-            exit 1
-      fi
-      echo "## Waiting for Spotify ##"
-      xdotool search --classname "$WMCLASS" > /dev/null 2>&1
-      if [[ "$?" == "0" ]]; then
-        xdotool windowminimize $(xdotool getactivewindow)
-        qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
-        break
-      fi
-      COUNTER=$(( COUNTER + 1 ))
-      sleep 0.25
-    done
-}
-
-adkiller_launch(){
-    # only launch script if it isn't active already
-    # we need to truncate script name to make pgrep work
-    if [[ -z "$(pgrep "${ADKILLER:0:14}")" ]]; then
-      if [[ "$DEBUG" = "1" ]]; then
-        echo "$INFOMSG1"
-        notify_send "$INFOMSG1"
-        $ADKILLER > "$LOGFILE" 2> /dev/null &
-      else
-        $ADKILLER > /dev/null 2>&1 &
-      fi
-    fi
+    spotify-wrapper.sh "RESTART"
 }
 
 ## MAIN
 
-read_write_config
-spotify_relaunch "$@"
-adkiller_launch
+spotify_close "$@"
