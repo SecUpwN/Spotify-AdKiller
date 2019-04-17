@@ -418,7 +418,7 @@ automute_simple(){
 
 automute_restart(){
     if [[ "$AD" = "1" ]]; then
-        spotify-relaunch.sh
+        spotify-wrapper.sh
     fi
 }
 

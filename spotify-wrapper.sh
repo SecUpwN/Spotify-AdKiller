@@ -57,7 +57,7 @@ PRELOAD_LIB="$SCRIPTDIR/dns-block/dns-block.so"
 # initialization
 
 COUNTER="0"
-
+RESTART="0"
 # config
 
 CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Spotify-AdKiller"
@@ -117,6 +117,34 @@ read_write_config(){
     source "$CONFIG_FILE"
 }
 
+spotify_close(){
+    # if spotify is not open, skip
+    if [[ $(pgrep -xi "$WMCLASS") == '' ]]; then
+      echo '## Spotify Closed ##'
+    else
+      # set the "restart" flag
+      RESTART="1"
+      # close adkiller and then spotify
+      kill $(pgrep "${ADKILLER:0:14}")
+      kill $(pgrep -xi "$WMCLASS")
+      while true; do
+        if [[ "$COUNTER" = "100" ]]
+          then
+              notify_send "$ERRORMSG1"
+              echo "$ERRORMSG1"
+              exit 1
+        fi
+        echo "## Waiting for Spotify to close ##"
+        if [[ $(pgrep -xi "$WMCLASS") == '' ]]; then
+          echo '## Spotify Closed ##'
+          break
+        fi
+        COUNTER=$(( COUNTER + 1 ))
+        sleep 0.25
+      done
+    fi
+}
+
 spotify_launch(){
     LD_PRELOAD="$PRELOAD_LIB" spotify "$@" > /dev/null 2>&1 &
     # wait for spotify to launch
@@ -131,7 +159,7 @@ spotify_launch(){
       echo "## Waiting for Spotify ##"
       xdotool search --classname "$WMCLASS" > /dev/null 2>&1
       if [[ "$?" == "0" ]]; then
-        if [[ "$CUSTOM_MODE" == "restart" && "$1" == "RESTART" ]]
+        if [[ "$CUSTOM_MODE" == "restart" && "$RESTART" == "1" ]]
           then
             qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
             sleep 0.25
@@ -161,9 +189,9 @@ adkiller_launch(){
 ## MAIN
 
 read_write_config
-if [[ "$CUSTOM_MODE" == "restart" && "$1" == "RESTART" ]]
+if [[ "$CUSTOM_MODE" == "restart" ]]
   then
-    echo "close"
+    spotify_close
 fi
 spotify_launch "$@"
 adkiller_launch
