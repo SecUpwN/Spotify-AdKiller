@@ -132,7 +132,7 @@ spotify_close(){
       kill $(pgrep "${ADKILLER:0:14}")
       kill $(pgrep -xi "$WMCLASS")
       while true; do
-        if [[ "$COUNTER" = "100" ]]
+        if [[ "$COUNTER" = "50" ]]
           then
               notify_send "$ERRORMSG1"
               echo "$ERRORMSG1"
@@ -144,7 +144,7 @@ spotify_close(){
           break
         fi
         COUNTER=$(( COUNTER + 1 ))
-        sleep 0.25
+        sleep 1
       done
     fi
 }
@@ -154,7 +154,7 @@ spotify_launch(){
     # wait for spotify to launch
     # if spotify not launched after 50 seconds exit script
     while true; do
-      if [[ "$COUNTER" = "200" ]]
+      if [[ "$COUNTER" = "50" ]]
         then
             notify_send "$ERRORMSG1"
             echo "$ERRORMSG1"
@@ -175,7 +175,7 @@ spotify_launch(){
         break
       fi
       COUNTER=$(( COUNTER + 1 ))
-      sleep 0.25
+      sleep 1
     done
 }
 
