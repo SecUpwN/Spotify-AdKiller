@@ -144,6 +144,13 @@ If, for some reason, Spotify does remain muted you can use the following command
 for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\"$)' | cut -d \# -f2 | grep -v Spotify); do pactl set-sink-input-mute "$i" no; done
 ```
 
+### Uninstalling
+Go to the directory you have cloned the repo in and run the provided installer:
+
+    uninstall.sh
+
+
+
 ### Similar Projects
 
 - [blockify](https://github.com/mikar/blockify) - automatic/blacklist-based ad-blocker written in Python
