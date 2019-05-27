@@ -145,7 +145,7 @@ for i in $(LC_ALL=C pactl list | grep -E '(^Sink Input)|(media.name = \"Spotify\
 ```
 
 ### Uninstalling
-Go to the directory you have cloned the repo in and run the provided installer:
+Go to the directory you have cloned the repo in and run the provided uninstaller:
 
     uninstall.sh
 
