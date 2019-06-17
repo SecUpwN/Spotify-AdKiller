@@ -119,7 +119,7 @@ set_player(){
       LOOPOPT="$CUSTOM_LOOPOPT"
     elif type cvlc > /dev/null 2>&1; then
       # vlc volume ranges from 0..256
-      PLAYER="cvlc --play-and-exit --volume=$((256*VOLUME/100))"
+      PLAYER="cvlc --play-and-exit --volume=$((256*$VOLUME/100))"
       LOOPOPT="--repeat"
     elif type mplayer > /dev/null 2>&1; then
       PLAYER="mplayer -vo null --volume=$VOLUME"
