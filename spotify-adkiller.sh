@@ -84,6 +84,10 @@ append_missing_slash() {
 }
 
 set_musicdir(){
+    if [[ "$automute" == "automute_restart" ]]; then
+        return
+    fi
+
     if [[ "$automute" == "automute_simple" ]]; then
         return
     fi
