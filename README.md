@@ -67,6 +67,8 @@ Run the provided installer:
 
 - `Spotify-AdKiller` has been tested to work with Spotify 0.9.x. Support for the 1.0.x beta releases has been implemented, but still needs more testing. If you run into any bugs while using `Spotify-AdKiller` with a Spotify beta release please report them on the bug tracker.
 
+- If you're on a debian-based distribution, do not use the Spotify snap package, use the [apt package instead](https://www.spotify.com/fr/download/linux/). Spotify-AdKiller doesn't work with Spotify installed through snap.
+
 - If you've installed Spotify from any source other than the official repository please make sure that the `spotify` executable is in your `PATH`.
 
     You can create a symbolic link, if necessary (e.g. linking `my-spotify` to `spotify` if you are using the user installation of [spotify-make](https://github.com/leamas/spotify-make)).
