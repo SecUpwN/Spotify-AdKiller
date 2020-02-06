@@ -36,13 +36,17 @@ Install all utilities + VLC on **[openSUSE](http://www.opensuse.org/)** with:
 
     sudo zypper in binutils pulseaudio-utils libnotify-tools xdotool vlc
 
-[![Ubuntu](http://spreadubuntu.neomenlo.org/files/banner-468x60.png)](http://www.ubuntu.com/)
+<a href="http://www.ubuntu.com/">
+  <img src="https://assets.ubuntu.com/v1/8dd99b80-ubuntu-logo14.png" alt="Ubuntu" height="60">
+</a>
 
 Install all utilities + VLC on **[Ubuntu](http://www.ubuntu.com/)** with:
 
     sudo apt-get install x11-utils pulseaudio-utils libnotify-bin xdotool vlc
 
-[![Arch Linux](http://www.faderweb.de/img/archlinux.jpg)](http://www.archlinux.org/)
+<a href="http://www.archlinux.org/">
+  <img src="https://www.archlinux.org/static/logos/archlinux-logo-dark-90dpi.ebdee92a15b3.png" alt="Arch Linux" height="60">
+</a>
 
 There is an [AUR Package](https://aur.archlinux.org/packages/spotify-adkiller-git/) for  **[Arch Linux](http://www.archlinux.org/)**. To install:
 
