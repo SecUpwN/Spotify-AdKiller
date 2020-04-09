@@ -80,6 +80,9 @@ CUSTOM_MODE=""
 RESTART_MINIMIZED="0"
 # if CUSTOM_MODE = "restart" Spotify should automaticaly be minimized? 1=yes
 
+PLAY_WAIT=0
+# if CUSTOM_MODE = "restart" Spotify should wait X seconds before trying to "press play" (slower computers need a moment, ex. 0.55)
+
 CUSTOM_PLAYER=""
 CUSTOM_LOOPOPT=""
 # local music player to use
@@ -165,6 +168,7 @@ spotify_launch(){
       if [[ "$?" == "0" ]]; then
         if [[ "$CUSTOM_MODE" == "restart" && "$RESTART" == "1" ]]
           then
+            sleep $PLAY_WAIT
             qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
             if [[ "$RESTART_MINIMIZED" == "1" ]]
               then
