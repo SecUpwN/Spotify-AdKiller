@@ -246,7 +246,7 @@ get_state(){
 get_pactl_nr(){
     LC_ALL=C pacmd list-sink-inputs | awk -v binary="$BINARY" '
             $1 == "index:" {idx = $2}
-            $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx; exit}
+            $1 == "application.process.binary" && $3 == "\"" binary "\"" {print idx}
         '
     # awk script by Glenn Jackmann (http://askubuntu.com/users/10127/)
     # first posted on http://askubuntu.com/a/180661
