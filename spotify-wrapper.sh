@@ -169,7 +169,7 @@ spotify_launch(){
         if [[ "$CUSTOM_MODE" == "restart" && "$RESTART" == "1" ]]
           then
             sleep $PLAY_WAIT
-            qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
+            dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
             if [[ "$RESTART_MINIMIZED" == "1" ]]
               then
                 sleep 0.25
