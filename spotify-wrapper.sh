@@ -58,6 +58,7 @@ PRELOAD_LIB="$SCRIPTDIR/dns-block/dns-block.so"
 
 COUNTER="0"
 RESTART="0"
+PLAY_WAIT="0"
 
 # config
 
