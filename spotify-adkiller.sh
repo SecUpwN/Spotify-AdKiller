@@ -84,6 +84,10 @@ append_missing_slash() {
 }
 
 set_musicdir(){
+    if [[ "$automute" == "automute_restart" ]]; then
+        return
+    fi
+
     if [[ "$automute" == "automute_simple" ]]; then
         return
     fi
@@ -161,6 +165,8 @@ set_volume(){
 
 set_mode(){
     case "$CUSTOM_MODE" in
+      restart)     automute="automute_restart"
+                      ;;
       continuous)     automute="automute_continuous"
                       ;;
       interstitial)   automute="automute_interstitial"
@@ -411,6 +417,12 @@ automute_simple(){
         unmute
     elif [[ "$AD" = "1" ]]; then
         mute
+    fi
+}
+
+automute_restart(){
+    if [[ "$AD" = "1" ]]; then
+        spotify-wrapper.sh
     fi
 }
 
